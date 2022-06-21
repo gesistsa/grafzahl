@@ -1,0 +1,11 @@
+name: grafzahl
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - pip
+  - pytorch>=1.6+cpuonly
+  - pip:
+    - simpletransformers
