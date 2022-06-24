@@ -16,3 +16,6 @@ Imports:
     quanteda,
     reticulate,
     utils
+Depends: 
+    R (>= 2.10)
+LazyData: true
