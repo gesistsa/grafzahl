@@ -1,5 +1,3 @@
-##Gracious R Analytical Framework for Zero-shot Analysis of Human Languages
-
 .have_conda <- function() {
     !is.null(tryCatch(reticulate::conda_list(), error = function(e) NULL))
 }
@@ -25,10 +23,15 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE) {
         }
     }
     if (envname %in% reticulate::conda_list()$name & !force) {
-        stop(paste0("Conda environment ", envname, " already exists.\nForceful reinstallation by setting force to `TRUE`.\n"))
+        stop(paste0("Conda environment ", envname, " already exists.\nForce reinstallation by setting `force` to `TRUE`.\n"))
     }
+    if (envname %in% reticulate::conda_list()$name & force) {
+        reticulate::conda_remove(envname)
+    }
+    
     ## The actual installation
     ## https://github.com/rstudio/reticulate/issues/779
     conda_path <- file.path(reticulate::miniconda_path(), "bin/conda")
-    system2(conda_path, args = c("env", "create",  paste0("-f=", system.file("grafzahl.yml", package = 'grafzahl')), "-n", envname, "python=3.7"))
+    system2(conda_path, args = c("env", "create",  paste0("-f=", system.file("grafzahl.yml", package = 'grafzahl')), "-n", envname, "python=3.9"))
 }
+
