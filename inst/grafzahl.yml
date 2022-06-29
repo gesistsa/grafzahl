@@ -5,7 +5,10 @@ channels:
   - anaconda
   - defaults
 dependencies:
+  - python=3.9
   - pip
   - pytorch>=1.6+cpuonly
   - pip:
+    - pandas
+    - tqdm  
     - simpletransformers

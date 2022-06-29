@@ -34,4 +34,3 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE) {
     conda_path <- file.path(reticulate::miniconda_path(), "bin/conda")
     system2(conda_path, args = c("env", "create",  paste0("-f=", system.file("grafzahl.yml", package = 'grafzahl')), "-n", envname, "python=3.9"))
 }
-
