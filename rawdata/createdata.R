@@ -13,3 +13,7 @@ unciviltweets <- quanteda::corpus(d$text)
 
 quanteda::docvars(unciviltweets, "uncivil") <- d$uncivil_dummy
 usethis::use_data(unciviltweets)
+
+set.seed(123)
+smallunciviltweets <- quanteda::corpus_sample(unciviltweets, 200)
+usethis::use_data(smallunciviltweets)
