@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# grafzahl
+# grafzahl <img src="man/figures/grafzahl_logo.svg" align="right" height="200" />
 
 <!-- badges: start -->
 
