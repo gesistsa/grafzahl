@@ -21,9 +21,11 @@ textmodel_transformer.default <- function(x, y = NULL, model_type = NULL, model_
     return(NA)
 }
 
+## assume that eval_prop = 0, no eval_df, no early
+## 
+
 #' @export
-textmodel_transformer.corpus <- function(x, y = NULL, model_type = NULL, model_name = NULL, regression = FALSE, output_dir = "output",
-                                         cuda = detect_cuda(), args = NULL) {
+textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
     .initialize_conda(.gen_envname(cuda = cuda))
     if (is.null(y)) {
         if (ncol(quanteda::docvars(x)) == 1) {
@@ -40,8 +42,24 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = NULL, model_n
         num_labels <- length(levels(as.factor(y)))
     }
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    py_train(input_data, num_labels)
-    return(input_data)
+    if (!dir.exists(output_dir)) {
+        dir.create(output_dir)
+    }
+    output_dir <- normalizePath(output_dir)
+    best_model_dir <- file.path(output_dir, "best_model")
+    cache_dir <- normalizePath(tempdir())
+    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs)
+    result <- list(
+        call = match.call(),
+        input_data = input_data,
+        output_dir = output_dir,
+        model_type = model_type,
+        model_name = model_name,
+        regression = regression
+    )
+    class(result) <- c("textmodel_transformer", "textmodel", "list")
+    ## TODO: delete "runs" directory
+    return(result)
 }
 
 #' @export

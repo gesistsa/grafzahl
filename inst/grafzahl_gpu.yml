@@ -1,0 +1,15 @@
+name: grafzahl
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pytorch>=1.6
+  - cudatoolkit=11.0 
+  - pip:
+    - pandas
+    - tqdm  
+    - simpletransformers

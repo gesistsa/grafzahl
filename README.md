@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 WIP: The goal of grafzahl (**G**racious **R** **A**nalytical
-**F**ramework for **Z**ero-shot **A**nalysis of **H**uman **L**anguages
+**F**ramework for **Z**appy **A**nalysis of **H**uman **L**anguages
 \[1\]) is to duct tape the
 [quanteda](https://github.com/quanteda/quanteda) ecosystem to modern
 [Transformer-based text classification
@@ -36,6 +36,26 @@ require(grafzahl)
 setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 ```
 
+## Some common choices
+
+| Your data         | model\_type | model\_name                        |
+| ----------------- | ----------- | ---------------------------------- |
+| English tweets    | bertweet    | vinai/bertweet-base                |
+| Lightweight       | mobilebert  | google/mobilebert-uncased          |
+|                   | distilbert  | distilbert-base-uncased            |
+| Long Text         | longformer  | allenai/longformer-base-4096       |
+|                   | bigbird     | google/bigbird-roberta-base        |
+| English (General) | bert        | bert-base-uncased                  |
+|                   | bert        | bert-base-cased                    |
+|                   | electra     | google/electra-small-discriminator |
+|                   | roberta     | roberta-base                       |
+| Multilingual      | xlm         | xlm-mlm-17-1280                    |
+|                   |             | xlm-mlm-100-1280                   |
+|                   | bert        | bert-base-multilingual-uncased     |
+|                   |             | bert-base-multilingual-cased       |
+|                   | xlmroberta  | xlm-roberta-base                   |
+|                   |             | xlm-roberta-large                  |
+
 -----
 
 1.  Yes, I totally made up the meaningless long name. Actually, it is
@@ -43,4 +63,4 @@ setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
     Count](https://de.wikipedia.org/wiki/Sesamstra%C3%9Fe#Graf_Zahl),
     meaning “Count (the noble title) Number”. And it seems to be so that
     it is compulsory to name absolutely everything related to
-    Transformer after Seasame Street characters.
+    Transformers after Seasame Street characters.
