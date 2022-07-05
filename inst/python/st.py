@@ -1,5 +1,7 @@
 import torch
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
+import os
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def py_detect_cuda():
     return(torch.cuda.is_available())
