@@ -10,8 +10,17 @@
     return(envname)
 }
 
+
+.install_gpu_pytorch <- function(cuda_version) {
+    .initialize_conda(.gen_envname(cuda = TRUE))
+    conda_path <- file.path(reticulate::miniconda_path(), "bin/conda")
+    system2(conda_path, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-y"))
+    python_path <- reticulate::py_config()$python
+    system2(python_path, args = c("-m", "pip", "install", "simpletransformers"))
+}
+
 #' @export
-setup_grafzahl <- function(cuda = FALSE, force = FALSE) {
+setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     envname <- .gen_envname(cuda = cuda)
     if (!.have_conda()) {
         cat("No conda was found in this system.")
@@ -38,4 +47,7 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE) {
         yml_file <- "grafzahl.yml"
     }
     system2(conda_path, args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname, "python=3.9"))
+    if (cuda) {
+        .install_gpu_pytorch(cuda_version = cuda_version)
+    }
 }
