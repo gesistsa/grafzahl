@@ -1,5 +1,7 @@
 .have_conda <- function() {
-    !is.null(tryCatch(reticulate::conda_list(), error = function(e) NULL))
+    ## !is.null(tryCatch(reticulate::conda_list(), error = function(e) NULL))
+    ## Not a very robust test, but take it.
+    dir.exists(reticulate::miniconda_path())
 }
 
 .gen_envname <- function(cuda = TRUE) {
@@ -23,10 +25,14 @@
 setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     envname <- .gen_envname(cuda = cuda)
     if (!.have_conda()) {
-        cat("No conda was found in this system.")
-        ans <- utils::menu(c("No", "Yes"), title = paste0("Do you want to install miniconda in ", reticulate::miniconda_path()))
-        if (ans == 1) {
-            stop("Setup aborted.\n")
+        if (!force) {
+            message("No conda was found in this system.")
+            ans <- utils::menu(c("No", "Yes"), title = paste0("Do you want to install miniconda in ", reticulate::miniconda_path()))
+            if (ans == 1) {
+                stop("Setup aborted.\n")
+            } else {
+                reticulate::install_miniconda()
+            }
         } else {
             reticulate::install_miniconda()
         }
