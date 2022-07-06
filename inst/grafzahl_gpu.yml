@@ -8,4 +8,5 @@ dependencies:
   - pip
   - pip:
     - pandas
-    - tqdm  
+    - tqdm
+    - emoji==0.6.0

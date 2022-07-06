@@ -12,3 +12,5 @@ dependencies:
     - pandas
     - tqdm  
     - simpletransformers
+    - emoji==0.6.0
+
