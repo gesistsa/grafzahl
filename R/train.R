@@ -9,15 +9,12 @@
 }
 
 #' @export
-textmodel_transformer <- function(x, y = NULL, model_name = NULL, regression = FALSE, model_type = NULL, output_dir = "output",
-                                  cuda = detect_cuda(), args = NULL) {
-    ## TO BE IMPLEMENTED
+textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
     UseMethod("textmodel_transformer")
 }
 
 #' @export
-textmodel_transformer.default <- function(x, y = NULL, model_type = NULL, model_name = NULL, regression = FALSE, output_dir = "output",
-                                          cuda = detect_cuda(), args = NULL) {
+textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
     return(NA)
 }
 
@@ -73,9 +70,9 @@ suggest_model <- function(x) {
 }
 
 #' @export
-predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(), ...) {
+predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     .initialize_conda(.gen_envname(cuda = cuda))
-    return(NA)
+    return(py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw))
 }
 
 #' @export

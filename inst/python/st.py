@@ -27,3 +27,18 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
             "num_train_epochs": num_train_epochs},
         use_cuda = py_detect_cuda())
     model.train_model(data)
+
+def py_predict(to_predict, model_type, output_dir, return_raw = False):
+    if len(to_predict) == 1:
+        to_predict = [to_predict]
+    model = ClassificationModel(model_type, output_dir, args = {
+        'reprocess_input_data': True,
+        "use_multiprocessing": False,
+        "fp16": True,
+        "use_multiprocessing_for_evaluation": False
+    })
+    predictions, raw_outputs = model.predict(to_predict)
+    if return_raw:
+        return(raw_outputs)
+    else:
+        return(predictions)
