@@ -36,6 +36,61 @@ require(grafzahl)
 setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 ```
 
+## Usage
+
+Suppose you have a bunch of tweets in quanteda corpus format. And the
+corpus has exactly one docvar that denotes the labels you want to
+predict. The data is from [this
+repository](https://github.com/pablobarbera/incivility-sage-open)
+(Theocharis et al., 2020).
+
+``` r
+unciviltweets
+#> Corpus consisting of 19,982 documents and 1 docvar.
+#> text1 :
+#> "@ @ Karma gave you a second chance yesterday.  Start doing m..."
+#> 
+#> text2 :
+#> "@ With people like you, Steve King there's still hope for we..."
+#> 
+#> text3 :
+#> "@ @ You bill is a joke and will sink the GOP. #WEDESERVEBETT..."
+#> 
+#> text4 :
+#> "@ Dream on. The only thing trump understands is how to enric..."
+#> 
+#> text5 :
+#> "@ @ Just like the Democrat taliban party was up front with t..."
+#> 
+#> text6 :
+#> "@ you are going to have more of the same with HRC, and you a..."
+#> 
+#> [ reached max_ndoc ... 19,976 more documents ]
+```
+
+In order to train a Transfomer model, please select the `model_type` and
+`model_name` from [Hugging Face’s list](https://huggingface.co/models).
+The table below lists some common choices. Suppose you want to train a
+Transformer model using “bertweet” (Nguyen et al., 2020) because it
+matches your domain of usage. By default, it will save the model in the
+`output` directory of the current directory. You can change it to
+elsewhere using the `output_dir` parameter.
+
+``` r
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+### If you are hardcore quanteda user:
+## model <- textmodel_transformer(unciviltweets,
+##                                model_type = "bertweet", model_name = "vinai/bertweet-base")
+```
+
+Make prediction
+
+``` r
+predict(model, unciviltweets)
+```
+
+That is it.
+
 ## Some common choices
 
 | Your data         | model\_type | model\_name                        |
@@ -50,11 +105,19 @@ setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 |                   | electra     | google/electra-small-discriminator |
 |                   | roberta     | roberta-base                       |
 | Multilingual      | xlm         | xlm-mlm-17-1280                    |
-|                   |             | xlm-mlm-100-1280                   |
-|                   | bert        | bert-base-multilingual-uncased     |
-|                   |             | bert-base-multilingual-cased       |
+|                   | xml         | xlm-mlm-100-1280                   |
+|                   | bert        | bert-base-multilingual-cased       |
 |                   | xlmroberta  | xlm-roberta-base                   |
-|                   |             | xlm-roberta-large                  |
+|                   | xlmroberta  | xlm-roberta-large                  |
+
+# References
+
+1.  Theocharis, Y., Barberá, P., Fazekas, Z., & Popa, S. A. (2020). The
+    dynamics of political incivility on Twitter. Sage Open, 10(2),
+    2158244020919447.
+2.  Nguyen, D. Q., Vu, T., & Nguyen, A. T. (2020). BERTweet: A
+    pre-trained language model for English Tweets. arXiv preprint
+    arXiv:2005.10200.
 
 -----
 

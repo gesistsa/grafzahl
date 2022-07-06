@@ -37,6 +37,35 @@ require(grafzahl)
 setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 ```
 
+## Usage
+
+Suppose you have a bunch of tweets in quanteda corpus format. And the corpus has exactly one docvar that denotes the labels you want to predict. The data is from [this repository](https://github.com/pablobarbera/incivility-sage-open) (Theocharis et al., 2020).
+
+```{r, echo = FALSE, message = FALSE}
+devtools::load_all()
+```
+
+```{r}
+unciviltweets
+```
+
+In order to train a Transfomer model, please select the `model_type` and `model_name` from [Hugging Face's list](https://huggingface.co/models). The table below lists some common choices. Suppose you want to train a Transformer model using "bertweet" (Nguyen et al., 2020) because it matches your domain of usage. By default, it will save the model in the `output` directory of the current directory. You can change it to elsewhere using the `output_dir` parameter. 
+
+```r
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+### If you are hardcore quanteda user:
+## model <- textmodel_transformer(unciviltweets,
+##                                model_type = "bertweet", model_name = "vinai/bertweet-base")
+```
+
+Make prediction
+
+```r
+predict(model, unciviltweets)
+```
+
+That is it.
+
 ## Some common choices
 
 | Your data         | model_type | model_name                         |
@@ -55,6 +84,11 @@ setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 |                   | bert       | bert-base-multilingual-cased       |
 |                   | xlmroberta | xlm-roberta-base                   |
 |                   | xlmroberta | xlm-roberta-large                  |
+
+# References
+
+1. Theocharis, Y., Barberá, P., Fazekas, Z., & Popa, S. A. (2020). The dynamics of political incivility on Twitter. Sage Open, 10(2), 2158244020919447.
+2. Nguyen, D. Q., Vu, T., & Nguyen, A. T. (2020). BERTweet: A pre-trained language model for English Tweets. arXiv preprint arXiv:2005.10200.
 
 ---
 [^1]: Yes, I totally made up the meaningless long name. Actually, it is the German name of the *Sesame Street* character [Count von Count](https://de.wikipedia.org/wiki/Sesamstra%C3%9Fe#Graf_Zahl), meaning "Count (the noble title) Number". And it seems to be so that it is compulsory to name absolutely everything related to Transformers after Seasame Street characters.
