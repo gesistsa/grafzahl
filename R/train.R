@@ -72,6 +72,7 @@ suggest_model <- function(x) {
 #' @export
 predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     .initialize_conda(.gen_envname(cuda = cuda))
+    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     return(py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw))
 }
 
