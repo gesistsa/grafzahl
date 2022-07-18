@@ -81,12 +81,27 @@ print.textmodel_transformer <- function(object, ...) {
     return(NA)
 }
 
-### There should be some form of hydration (just from the outputdir).
-
 #' @export
 detect_cuda <- function() {
     allenvs <- reticulate::conda_list()$name
     .initialize_conda(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     return(py_detect_cuda())
+}
+
+#' @export
+hydrate <- function(output_dir, model_type, regression = FALSE) {
+    if (missing(model_type) & missing(output_dir)) {
+        stop("You must provide both `output_dir` and `model_type`")
+    }
+    result <- list(
+        call = NA,
+        input_data = NA,
+        output_dir = output_dir,
+        model_type = model_type,
+        model_name = NA,
+        regression = regression
+    )
+    class(result) <- c("textmodel_transformer", "textmodel", "list")
+    return(result)
 }
