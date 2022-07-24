@@ -9,12 +9,12 @@
 }
 
 #' @export
-textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
+textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL) {
     UseMethod("textmodel_transformer")
 }
 
 #' @export
-textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
+textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL) {
     return(NA)
 }
 
@@ -22,7 +22,7 @@ textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta"
 ## 
 
 #' @export
-textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, args = NULL) {
+textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
     .initialize_conda(.gen_envname(cuda = cuda))
     if (is.null(y)) {
         if (ncol(quanteda::docvars(x)) == 1) {
@@ -45,7 +45,7 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
     output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- normalizePath(tempdir())
-    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs)
+    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size)
     result <- list(
         call = match.call(),
         input_data = input_data,
@@ -55,7 +55,9 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
         regression = regression
     )
     class(result) <- c("textmodel_transformer", "textmodel", "list")
-    ## TODO: delete "runs" directory
+    if (cleanup & dir.exists(file.path("./", "runs"))) {
+        unlink(file.path("./", "runs"), recursive = TRUE, force = TRUE)
+    }
     return(result)
 }
 

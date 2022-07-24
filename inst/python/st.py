@@ -1,14 +1,20 @@
 import torch
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 import os
+import pandas as pd
+
+from sklearn.model_selection import train_test_split
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 def py_detect_cuda():
     return(torch.cuda.is_available())
 
-def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs):
+def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size):
+    data.columns = ["text", "labels"]
+    if train_size < 1 and num_train_epochs <= 4:
+        num_train_epochs = 20
     model = ClassificationModel(
-        model_type, model_name, args={
+        model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = {
             'reprocess_input_data': True, 
             'overwrite_output_dir': True,
             'fp16': True,
@@ -16,17 +22,22 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
             "best_model_dir": best_model_dir,
             "cache_dir": cache_dir,
             "use_multiprocessing": False,
+            "use_multiprocessing_for_evaluation": False,
             "save_steps": -1,
             "save_eval_checkpoints": False,
             "save_model_every_epoch": False,
             "use_early_stopping": True,
-            "early_stopping_delta": 0.01,
+            "evaluate_during_training": True,
+            "early_stopping_delta": 0.02,
             "early_stopping_metric": "mcc",
             "early_stopping_metric_minimize": False,
-            "early_stopping_patience": 2,
-            "num_train_epochs": num_train_epochs},
-        use_cuda = py_detect_cuda())
-    model.train_model(data)
+            "early_stopping_patience": 1,
+            "num_train_epochs": num_train_epochs})
+    if train_size < 1:
+        data_train, data_cv = train_test_split(data, train_size = train_size)
+        model.train_model(data_train, eval_df = data_cv)
+    else:
+        model.train_model(data)
 
 def py_predict(to_predict, model_type, output_dir, return_raw = False):
     if len(to_predict) == 1:
