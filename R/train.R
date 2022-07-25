@@ -9,12 +9,12 @@
 }
 
 #' @export
-textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL) {
+textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
     UseMethod("textmodel_transformer")
 }
 
 #' @export
-textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL) {
+textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
     return(NA)
 }
 

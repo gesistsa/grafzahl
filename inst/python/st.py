@@ -13,30 +13,31 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
     data.columns = ["text", "labels"]
     if train_size < 1 and num_train_epochs <= 4:
         num_train_epochs = 20
-    model = ClassificationModel(
-        model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = {
-            'reprocess_input_data': True, 
-            'overwrite_output_dir': True,
-            'fp16': True,
-            'output_dir': output_dir,
-            "best_model_dir": best_model_dir,
-            "cache_dir": cache_dir,
-            "use_multiprocessing": False,
-            "use_multiprocessing_for_evaluation": False,
-            "save_steps": -1,
-            "save_eval_checkpoints": False,
-            "save_model_every_epoch": False,
-            "use_early_stopping": True,
-            "evaluate_during_training": True,
-            "early_stopping_delta": 0.02,
-            "early_stopping_metric": "mcc",
-            "early_stopping_metric_minimize": False,
-            "early_stopping_patience": 1,
-            "num_train_epochs": num_train_epochs})
+    mod_args = {
+        'reprocess_input_data': True, 
+        'overwrite_output_dir': True,
+        'fp16': True,
+        'output_dir': output_dir,
+        "best_model_dir": best_model_dir,
+        "cache_dir": cache_dir,
+        "use_multiprocessing": False,
+        "use_multiprocessing_for_evaluation": False,
+        "save_steps": -1,
+        "save_eval_checkpoints": False,
+        "save_model_every_epoch": False,
+        "num_train_epochs": num_train_epochs}
     if train_size < 1:
-        data_train, data_cv = train_test_split(data, train_size = train_size)
+        mod_args["use_early_stopping"] = True
+        mod_args["evaluate_during_training"] = True
+        mod_args["early_stopping_delta"] = 0.02
+        mod_args["early_stopping_metric"] = "mcc"
+        mod_args["early_stopping_metric_minimize"] = False
+        mod_args["early_stopping_patience"] = 1
+        model = ClassificationModel(model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = mod_args)
+        data_train, data_cv = train_test_split(data, train_size = train_size, stratify = data['labels'].values.tolist())
         model.train_model(data_train, eval_df = data_cv)
     else:
+        model = ClassificationModel(model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = mod_args)
         model.train_model(data)
 
 def py_predict(to_predict, model_type, output_dir, return_raw = False):
