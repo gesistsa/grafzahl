@@ -2,6 +2,8 @@ import torch
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 import os
 import pandas as pd
+import random
+
 
 from sklearn.model_selection import train_test_split
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -9,7 +11,8 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 def py_detect_cuda():
     return(torch.cuda.is_available())
 
-def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size):
+def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size, manual_seed):
+    random.seed(manual_seed)
     data.columns = ["text", "labels"]
     if train_size < 1 and num_train_epochs <= 4:
         num_train_epochs = 20
@@ -25,7 +28,9 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
         "save_steps": -1,
         "save_eval_checkpoints": False,
         "save_model_every_epoch": False,
-        "num_train_epochs": num_train_epochs}
+        "num_train_epochs": num_train_epochs,
+        "manual_seed": manual_seed
+    }
     if train_size < 1:
         mod_args["use_early_stopping"] = True
         mod_args["evaluate_during_training"] = True
