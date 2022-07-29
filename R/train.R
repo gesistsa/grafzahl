@@ -8,6 +8,20 @@
     }
 }
 
+## Create a factor-like thing that is zero-indexed. It should work with numeric vectors, char vectors and factors.
+## The output is a vector 
+.make_0i <- function(x) {
+    levels <- unique(x)
+    matching_levels <- seq(0, (length(levels) - 1))
+    res <- matching_levels[match(x, levels)]
+    attr(res, "levels") <- levels
+    return(res)
+}
+
+.restore_0i <- function(x) {
+    attr(x, "levels")[x + 1]
+}
+
 #' @export
 textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
     UseMethod("textmodel_transformer")
@@ -17,9 +31,6 @@ textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_
 textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
     return(NA)
 }
-
-## assume that eval_prop = 0, no eval_df, no early
-## 
 
 #' @export
 textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE) {
@@ -31,13 +42,14 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
             stop("Please either specify `y` or set exactly one `docvars` in `x`.")
         }
     }
-    ## if (!is.factor(y) & !regression) {
-    ##     y <- as.factor(y)
-    ## }
-    input_data <- data.frame("text" = as.vector(x), "label" = y, stringsAsFactors = FALSE)
     if (!regression) {
-        num_labels <- length(levels(as.factor(y)))
+        y <- .make_0i(y)
+        num_labels <- length(attr(y, "levels"))
+        levels <- attr(y, "levels")
+    } else {
+        levels <- NULL
     }
+    input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     if (!dir.exists(output_dir)) {
         dir.create(output_dir)
@@ -52,7 +64,8 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
         output_dir = output_dir,
         model_type = model_type,
         model_name = model_name,
-        regression = regression
+        regression = regression,
+        levels = levels
     )
     class(result) <- c("textmodel_transformer", "textmodel", "list")
     if (cleanup & dir.exists(file.path("./", "runs"))) {
@@ -75,7 +88,11 @@ suggest_model <- function(x) {
 predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     .initialize_conda(.gen_envname(cuda = cuda))
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    return(py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw))
+    res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
+    if (return_raw | is.null(object$levels)) {
+        return(res)
+    }
+    return(object$levels[res + 1])
 }
 
 #' @export
@@ -102,7 +119,8 @@ hydrate <- function(output_dir, model_type, regression = FALSE) {
         output_dir = output_dir,
         model_type = model_type,
         model_name = NA,
-        regression = regression
+        regression = regression,
+        levels = NULL
     )
     class(result) <- c("textmodel_transformer", "textmodel", "list")
     return(result)
