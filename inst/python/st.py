@@ -12,6 +12,8 @@ def py_detect_cuda():
     return(torch.cuda.is_available())
 
 def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size, manual_seed):
+    if py_detect_cuda():
+        torch.cuda.empty_cache()
     random.seed(manual_seed)
     data.columns = ["text", "labels"]
     if train_size < 1 and num_train_epochs <= 4:
