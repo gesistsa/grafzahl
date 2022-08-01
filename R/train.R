@@ -23,17 +23,26 @@
 }
 
 #' @export
-textmodel_transformer <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE, manual_seed = floor(runif(1, min = 1, max = 721831))) {
-    UseMethod("textmodel_transformer")
+grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+                     regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                     train_size = 0.8, args = NULL, cleanup = TRUE,
+                     manual_seed = floor(runif(1, min = 1, max = 721831))) {
+    UseMethod("grafzahl")
 }
 
 #' @export
-textmodel_transformer.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE, manual_seed = floor(runif(1, min = 1, max = 721831))) {
+grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                             train_size = 0.8, args = NULL, cleanup = TRUE,
+                             manual_seed = floor(runif(1, min = 1, max = 721831))) {
     return(NA)
 }
 
 #' @export
-textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base", regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4, train_size = 0.8, args = NULL, cleanup = TRUE, manual_seed = floor(runif(1, min = 1, max = 721831))) {
+grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+                            regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                            train_size = 0.8, args = NULL, cleanup = TRUE,
+                            manual_seed = floor(runif(1, min = 1, max = 721831))) {
     if (!is.integer(manual_seed)) {
         manual_seed <- as.integer(manual_seed)
     }
@@ -71,7 +80,7 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
         levels = levels,
         manual_seed = manual_seed
     )
-    class(result) <- c("textmodel_transformer", "textmodel", "list")
+    class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
     if (cleanup & dir.exists(file.path("./", "runs"))) {
         unlink(file.path("./", "runs"), recursive = TRUE, force = TRUE)
     }
@@ -79,8 +88,8 @@ textmodel_transformer.corpus <- function(x, y = NULL, model_type = "xlmroberta",
 }
 
 #' @export
-grafzahl <- function(...) {
-    textmodel_transformer(...)
+textmodel_transformer <- function(...) {
+    grafzahl(...)
 }
 
 #' @export
@@ -89,7 +98,7 @@ suggest_model <- function(x) {
 }
 
 #' @export
-predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
+predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     .initialize_conda(.gen_envname(cuda = cuda))
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
@@ -100,7 +109,7 @@ predict.textmodel_transformer <- function(object, newdata, cuda = detect_cuda(),
 }
 
 #' @export
-print.textmodel_transformer <- function(object, ...) {
+print.grafzahl <- function(object, ...) {
     return(NA)
 }
 
@@ -127,6 +136,6 @@ hydrate <- function(output_dir, model_type, regression = FALSE) {
         levels = NULL,
         manual_seed = NULL
     )
-    class(result) <- c("textmodel_transformer", "textmodel", "list")
+    class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
     return(result)
 }
