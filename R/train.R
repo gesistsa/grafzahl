@@ -59,6 +59,7 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
         num_labels <- length(attr(y, "levels"))
         levels <- attr(y, "levels")
     } else {
+        num_labels <- 1L
         levels <- NULL
     }
     input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
@@ -69,7 +70,7 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
     output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- normalizePath(tempdir())
-    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed)
+    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression)
     result <- list(
         call = match.call(),
         input_data = input_data,
