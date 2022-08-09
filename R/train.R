@@ -100,6 +100,12 @@ suggest_model <- function(x) {
 
 #' @export
 predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
+    if (missing(newdata)) {
+        if (!is.data.frame(object$input_data)) {
+            stop("`newdata` is missing. And no input data in the `grafzahl` object.", call. = FALSE)
+        }
+        newdata <- object$input_data$text
+    }
     .initialize_conda(.gen_envname(cuda = cuda))
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
