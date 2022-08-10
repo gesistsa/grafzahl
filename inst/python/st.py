@@ -11,7 +11,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 def py_detect_cuda():
     return(torch.cuda.is_available())
 
-def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size, manual_seed, regression):
+def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type, model_name, num_train_epochs, train_size, manual_seed, regression, verbose):
     if py_detect_cuda():
         torch.cuda.empty_cache()
     random.seed(manual_seed)
@@ -31,7 +31,8 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
         "save_eval_checkpoints": False,
         "save_model_every_epoch": False,
         "num_train_epochs": num_train_epochs,
-        "manual_seed": manual_seed
+        "manual_seed": manual_seed,
+        "silent": not verbose
     }
     if regression:
         mod_args["regression"] = True
@@ -48,10 +49,10 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
             mod_args["early_stopping_metric_minimize"] = False
         model = ClassificationModel(model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = mod_args)
         data_train, data_cv = train_test_split(data, train_size = train_size, stratify = data['labels'].values.tolist())
-        model.train_model(data_train, eval_df = data_cv)
+        model.train_model(data_train, eval_df = data_cv, verbose = verbose, show_running_loss = verbose)
     else:
         model = ClassificationModel(model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = mod_args)
-        model.train_model(data)
+        model.train_model(data, verbose = verbose, show_running_loss = verbose)
 
 def py_predict(to_predict, model_type, output_dir, return_raw = False):
     if len(to_predict) == 1:

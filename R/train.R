@@ -26,7 +26,7 @@
 grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                      regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
                      train_size = 0.8, args = NULL, cleanup = TRUE,
-                     manual_seed = floor(runif(1, min = 1, max = 721831))) {
+                     manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     UseMethod("grafzahl")
 }
 
@@ -34,7 +34,7 @@ grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-r
 grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                              regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
                              train_size = 0.8, args = NULL, cleanup = TRUE,
-                             manual_seed = floor(runif(1, min = 1, max = 721831))) {
+                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     return(NA)
 }
 
@@ -42,7 +42,7 @@ grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name 
 grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
                             train_size = 0.8, args = NULL, cleanup = TRUE,
-                            manual_seed = floor(runif(1, min = 1, max = 721831))) {
+                            manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     if (!is.integer(manual_seed)) {
         manual_seed <- as.integer(manual_seed)
     }
@@ -53,6 +53,16 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
         } else {
             stop("Please either specify `y` or set exactly one `docvars` in `x`.")
         }
+    }
+    if (quanteda::ndoc(x) <= 1) {
+        stop("Too few documents.")
+    }
+    if (length(y) == 1) {
+        ## It should be a docvars name, but it's better check
+        if (!y %in% colnames(quanteda::docvars(x))) {
+            stop(paste0(y, " is not a docvar."))
+        }
+        y <- as.vector(quanteda::docvars(x)[,y])
     }
     if (!regression) {
         y <- .make_0i(y)
@@ -70,7 +80,7 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
     output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- normalizePath(tempdir())
-    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression)
+    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
     result <- list(
         call = match.call(),
         input_data = input_data,
