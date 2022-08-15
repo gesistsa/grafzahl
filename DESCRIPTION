@@ -11,11 +11,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Suggests: 
     cld3,
-    lime,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
     cld2,
+    lime,
     quanteda,
     reticulate,
     stringi,
