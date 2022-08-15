@@ -1,4 +1,5 @@
 ^README\.Rmd$
 ^LICENSE\.md$
-^rawdata
-data/smallunciviltweets\.rda$
+^rawdata/
+^data/smallunciviltweets\.rda$
+^paper/
