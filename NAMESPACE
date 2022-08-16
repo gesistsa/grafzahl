@@ -2,7 +2,6 @@
 
 S3method(grafzahl,corpus)
 S3method(grafzahl,default)
-S3method(predict,grafzahl)
 S3method(print,grafzahl)
 export(detect_cuda)
 export(grafzahl)
@@ -10,5 +9,4 @@ export(hydrate)
 export(model_type.grafzahl)
 export(predict_model.grafzahl)
 export(setup_grafzahl)
-export(suggest_model)
 export(textmodel_transformer)

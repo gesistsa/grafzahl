@@ -21,6 +21,16 @@
     system2(python_path, args = c("-m", "pip", "install", "simpletransformers"))
 }
 
+#' Setup grafzahl
+#'
+#' Install a self-contained miniconda environment with all Python components (PyTorch, Transformers, Simpletransformers, etc) which grafzahl required. The default location is "~/.local/share/r-miniconda/envs/grafzahl_condaenv" (suffix "_cuda" is added if `cuda` is `TRUE`).
+#' On Linux or Mac and if miniconda is not found, this function will also install miniconda.
+#' @param cuda logical, if `TRUE`, indicate whether a CUDA-enabled environment is wanted.
+#' @param force logical, if `TRUE`, delete previous environment (if exists) and create a new environment
+#' @param cuda_version character, indicate CUDA version, ignore if `cuda` is `FALSE`
+#' @examples
+#' # setup an environment with cuda enabled.
+#' setup_graf(cuda = TRUE)
 #' @export
 setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     envname <- .gen_envname(cuda = cuda)

@@ -1,4 +1,5 @@
-#' @export
+#' @method predict_model grafzahl
+#' @export predict_model.grafzahl
 predict_model.grafzahl <- function(x, newdata, type, ...) {
     if (!requireNamespace('grafzahl', quietly = TRUE)) {
         stop('grafzahl must be available when working with grafzahl models')
@@ -17,7 +18,8 @@ predict_model.grafzahl <- function(x, newdata, type, ...) {
     }
 }
 
-#' @export
+#' @method model_type grafzahl
+#' @export model_type.grafzahl
 model_type.grafzahl <- function(x, ...) {
     if (x$regression) {
         return("regression")

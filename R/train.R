@@ -22,6 +22,37 @@
     attr(x, "levels")[x + 1]
 }
 
+#' Finetune a pretrained Transformer model for texts
+#'
+#' Fine tune (or train) a pretrained Transformer model for your given training labelled data `x` and `y`. The prediction task can be classification (if `regression` is `FALSE`, default) or regression (if `regression` is `TRUE`).
+#' @param x the [corpus] or character vector of texts on which the model will be trained. Depending on `train_size`, some texts will be used for cross-validation.
+#' @param y training labels. It can either be a single string indicating which [docvars] of the [corpus] is the training labels; a vector of training labels in either character or factor; or `NULL` if the [corpus] contains exactly one column in [docvars] and that column is the training labels. If `x` is a character vector, `y` must be a vector of the same length.
+#' @param model_type a string indicating model_type of the input model. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta". Please find this information in the `config.json` file of the model.
+#' @param model_name string indicates either 1) the model name on Hugging Face website; 2) the local path of the model
+#' @param regression logical, if `TRUE`, the task is regression, classification otherwise.
+#' @param output_dir string, location of the output model. Important: Please note that if this directory exists, it will be overwritten.
+#' @param cuda logical, whether to use CUDA, default to [detect_cuda()].
+#' @param num_train_epochs numeric, if `train_size` is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5. If `train_size` is exactly 1.0, the number of epochs is exactly that.
+#' @param train_size numeric, proportion of data in `x` and `y` to be used actually for training. The rest will be used for cross validation.
+#' @param args list, additionally parameters to be used in the underlying simple transformers
+#' @param cleanup logical, if `TRUE`, the `runs` directory generated will be removed when the training is done
+#' @param manual_seed numeric, random seed
+#' @param verbose logical, if `TRUE`, debug messages will be displayed
+#' @param ... paramters pass to [grafzahl()]
+#' @return a `grafzahl` S3 object
+#' @examples
+#' \dontrun{
+#' library("quanteda")
+#' txt <- c(d1 = "Chinese Beijing Chinese",
+#'          d2 = "Chinese Chinese Shanghai",
+#'          d3 = "Chinese Macao",
+#'          d4 = "Tokyo Japan Chinese",
+#'          d5 = "Chinese Chinese Chinese Tokyo Japan")
+#' y <- factor(c("Y", "Y", "Y", "N", NA), ordered = TRUE)
+#' model <- grafzahl(x = txt, y = y, model_type = "bert", model_name = "bert-base-cased")
+#' predict(model, newdata = txt)
+#' }
+#' @seealso [predict.grafzahl()]
 #' @export
 grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                      regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
@@ -30,6 +61,7 @@ grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-r
     UseMethod("grafzahl")
 }
 
+#' @rdname grafzahl
 #' @export
 grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                              regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
@@ -38,6 +70,7 @@ grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name 
     return(NA)
 }
 
+#' @rdname grafzahl
 #' @export
 grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
@@ -98,17 +131,26 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
     return(result)
 }
 
+#' @rdname grafzahl
 #' @export
 textmodel_transformer <- function(...) {
     grafzahl(...)
 }
 
-#' @export
-suggest_model <- function(x) {
-    return(NA)
-}
+## #' @export
+## suggest_model <- function(x) {
+##     return(NA)
+## }
 
-#' @export
+#' Prediction from a fine-tuned grafzahl object
+#'
+#' Make prediction from a fine-tuned grafzahl object.
+#' @param object an S3 object trained with [grafzahl()]
+#' @param newdata a [corpus] or a character vector of texts on which prediction should be made
+#' @inheritParams grafzahl
+#' @param return_raw logical, if `TRUE`, return a matrix of logits; a vector of class prediction otherwise
+#' @param ... not used
+#' @return a vector of class prediction or a matrix of logits
 predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     if (missing(newdata)) {
         if (!is.data.frame(object$input_data)) {
@@ -125,11 +167,16 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
     return(object$levels[res + 1])
 }
 
+#' @method print grafzahl
 #' @export
 print.grafzahl <- function(object, ...) {
     return(NA)
 }
 
+#' Detect cuda
+#'
+#' This function detects whether cuda is available. If `setup_grafzahl` was executed with `cuda` being `FALSE`, this function will return `FALSE`. Even if `setup_grafzahl` was executed with `cuda` being `TRUE` but with any factor that can't enable cuda (e.g. no Nvidia GPU, the environment was incorrectly created), this function will also return `FALSE`.
+#' @return boolean, whether cuda is available.
 #' @export
 detect_cuda <- function() {
     allenvs <- reticulate::conda_list()$name
@@ -138,6 +185,11 @@ detect_cuda <- function() {
     return(py_detect_cuda())
 }
 
+#' Create a grafzahl S3 object from the output_dir
+#'
+#' Create a grafzahl S3 object from the output_dir
+#' @inheritParams grafzahl
+#' 
 #' @export
 hydrate <- function(output_dir, model_type, regression = FALSE) {
     if (missing(model_type) & missing(output_dir)) {
