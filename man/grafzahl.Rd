@@ -5,6 +5,7 @@
 \alias{grafzahl.default}
 \alias{grafzahl.corpus}
 \alias{textmodel_transformer}
+\alias{grafzahl.character}
 \title{Finetune a pretrained Transformer model for texts}
 \usage{
 grafzahl(
@@ -56,6 +57,22 @@ grafzahl(
 )
 
 textmodel_transformer(...)
+
+\method{grafzahl}{character}(
+  x,
+  y = NULL,
+  model_type = "xlmroberta",
+  model_name = "xlm-roberta-base",
+  regression = FALSE,
+  output_dir = "./output",
+  cuda = detect_cuda(),
+  num_train_epochs = 4,
+  train_size = 0.8,
+  args = NULL,
+  cleanup = TRUE,
+  manual_seed = floor(runif(1, min = 1, max = 721831)),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{the \link{corpus} or character vector of texts on which the model will be trained. Depending on \code{train_size}, some texts will be used for cross-validation.}

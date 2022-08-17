@@ -136,6 +136,23 @@ textmodel_transformer <- function(...) {
     grafzahl(...)
 }
 
+#' @rdname grafzahl
+#' @export
+grafzahl.character <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+                            regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                            train_size = 0.8, args = NULL, cleanup = TRUE,
+                            manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
+    if (is.null(y)) {
+        stop("`y` cannot be NULL when x is a character vector.", call. = FALSE)
+    }
+    if (length(x) != length(y)) {
+        stop("`y` must have the same length as `x`.", call. = FALSE)
+    }
+    grafzahl(x = quanteda::corpus(x), y = y, model_type = model_type, model_name = model_name, regression = regression,
+             output_dir = output_dir, cuda = cuda, num_train_epochs = num_train_epochs, train_size = train_size,
+             args = args, cleanup = cleanup, manual_seed = manual_seed, verbose = verbose)
+}
+
 ## #' @export
 ## suggest_model <- function(x) {
 ##     return(NA)
