@@ -42,15 +42,14 @@
 #' @return a `grafzahl` S3 object
 #' @examples
 #' \dontrun{
-#' library("quanteda")
-#' txt <- c(d1 = "Chinese Beijing Chinese",
-#'          d2 = "Chinese Chinese Shanghai",
-#'          d3 = "Chinese Macao",
-#'          d4 = "Tokyo Japan Chinese",
-#'          d5 = "Chinese Chinese Chinese Tokyo Japan")
-#' y <- factor(c("Y", "Y", "Y", "N", NA), ordered = TRUE)
-#' model <- grafzahl(x = txt, y = y, model_type = "bert", model_name = "bert-base-cased")
-#' predict(model, newdata = txt)
+#' library(quanteda)
+#' library(quanteda.textmodels) ## for the data only
+#' set.seed(20190721)
+#' model <- grafzahl(x = data_corpus_moviereviews, y = "sentiment",
+#'                  model_type = "bert", model_name = "bert-base-uncased",
+#'                  train_size = 1, num_train_epochs = 2)
+#' preds <- predict(model)
+#' table(preds, docvars(data_corpus_moviereviews, "sentiment"))
 #' }
 #' @seealso [predict.grafzahl()]
 #' @export
@@ -151,6 +150,8 @@ textmodel_transformer <- function(...) {
 #' @param return_raw logical, if `TRUE`, return a matrix of logits; a vector of class prediction otherwise
 #' @param ... not used
 #' @return a vector of class prediction or a matrix of logits
+#' @method predict grafzahl
+#' @export
 predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw = FALSE, ...) {
     if (missing(newdata)) {
         if (!is.data.frame(object$input_data)) {
@@ -169,7 +170,7 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
 
 #' @method print grafzahl
 #' @export
-print.grafzahl <- function(object, ...) {
+print.grafzahl <- function(x, ...) {
     return(NA)
 }
 

@@ -30,7 +30,9 @@
 #' @param cuda_version character, indicate CUDA version, ignore if `cuda` is `FALSE`
 #' @examples
 #' # setup an environment with cuda enabled.
-#' setup_graf(cuda = TRUE)
+#' \dontrun{
+#' setup_grafzahl(cuda = TRUE)
+#' }
 #' @export
 setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     envname <- .gen_envname(cuda = cuda)

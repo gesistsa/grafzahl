@@ -1,16 +1,17 @@
 Package: grafzahl
-Title: What the Package Does (One Line, Title Case)
+Title: Supervised Machine Learning for Textual Data Using Transformers and Quanteda
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Chung-hong", "Chan", , "chainsawtiney@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-6232-7530"))
+Description: The goal of grafzahl is to duct tape the quanteda ecosystem to modern Transformer-based text classification models.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Suggests: 
     cld3,
+    quanteda.textmodels,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -20,6 +21,6 @@ Imports:
     reticulate,
     stringi,
     utils
-Depends: 
-    R (>= 2.10)
 LazyData: true
+Depends: 
+    R (>= 3.5)

@@ -94,15 +94,14 @@ Fine tune (or train) a pretrained Transformer model for your given training labe
 }
 \examples{
 \dontrun{
-library("quanteda")
-txt <- c(d1 = "Chinese Beijing Chinese",
-         d2 = "Chinese Chinese Shanghai",
-         d3 = "Chinese Macao",
-         d4 = "Tokyo Japan Chinese",
-         d5 = "Chinese Chinese Chinese Tokyo Japan")
-y <- factor(c("Y", "Y", "Y", "N", NA), ordered = TRUE)
-model <- grafzahl(x = txt, y = y, model_type = "bert", model_name = "bert-base-cased")
-predict(model, newdata = txt)
+library(quanteda)
+library(quanteda.textmodels) ## for the data only
+set.seed(20190721)
+model <- grafzahl(x = data_corpus_moviereviews, y = "sentiment",
+                 model_type = "bert", model_name = "bert-base-uncased",
+                 train_size = 1, num_train_epochs = 2)
+preds <- predict(model)
+table(preds, docvars(data_corpus_moviereviews, "sentiment"))
 }
 }
 \seealso{

@@ -19,5 +19,7 @@ On Linux or Mac and if miniconda is not found, this function will also install m
 }
 \examples{
 # setup an environment with cuda enabled.
-setup_graf(cuda = TRUE)
+\dontrun{
+setup_grafzahl(cuda = TRUE)
+}
 }
