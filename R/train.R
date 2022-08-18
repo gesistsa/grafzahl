@@ -238,12 +238,12 @@ detect_cuda <- function() {
 #' @inheritParams grafzahl
 #' 
 #' @export
-hydrate <- function(output_dir, regression = FALSE) {
-    if (missing(model_type) & missing(output_dir)) {
-        stop("You must provide both `output_dir` and `model_type`")
+hydrate <- function(output_dir, model_type = NULL, regression = FALSE) {
+    if (missing(output_dir)) {
+        stop("You must provide `output_dir`")
     }
     if (is.null(model_type)) {
-        model_type <- .infer_model_type(model_name)
+        model_type <- .infer_model_type(output_dir)
     }
     model_type <- gsub("-", "", tolower(model_type))
     result <- list(

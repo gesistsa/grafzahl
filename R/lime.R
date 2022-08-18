@@ -12,7 +12,7 @@ predict_model.grafzahl <- function(x, newdata, type, ...) {
         res <- predict(x, newdata = newdata, return_raw = TRUE, ...)
         ey <- exp(res)
         output <- as.data.frame(ey / apply(ey, 1, sum))
-        colnames(output) <- model$levels
+        colnames(output) <- x$levels
         return(output)
     } else {
         stop("Unknown `type`.")
