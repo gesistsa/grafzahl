@@ -68,13 +68,15 @@ unciviltweets
 #> [ reached max_ndoc ... 19,976 more documents ]
 ```
 
-In order to train a Transfomer model, please select the `model_type` and
-`model_name` from [Hugging Face’s list](https://huggingface.co/models).
-The table below lists some common choices. Suppose you want to train a
-Transformer model using “bertweet” (Nguyen et al., 2020) because it
-matches your domain of usage. By default, it will save the model in the
-`output` directory of the current directory. You can change it to
-elsewhere using the `output_dir` parameter.
+In order to train a Transfomer model, please select the `model_name`
+from [Hugging Face’s list](https://huggingface.co/models). The table
+below lists some common choices. In most of the time, providing
+`model_name` is sufficient, there is no need to provide `model_type`.
+
+Suppose you want to train a Transformer model using “bertweet” (Nguyen
+et al., 2020) because it matches your domain of usage. By default, it
+will save the model in the `output` directory of the current directory.
+You can change it to elsewhere using the `output_dir` parameter.
 
 ``` r
 model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
@@ -86,7 +88,7 @@ model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/be
 Make prediction
 
 ``` r
-predict(model, unciviltweets)
+predict(model)
 ```
 
 That is it.
