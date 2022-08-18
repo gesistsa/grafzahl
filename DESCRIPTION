@@ -16,6 +16,7 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     cld2,
+    jsonlite,
     lime,
     quanteda,
     reticulate,

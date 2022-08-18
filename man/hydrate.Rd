@@ -4,12 +4,10 @@
 \alias{hydrate}
 \title{Create a grafzahl S3 object from the output_dir}
 \usage{
-hydrate(output_dir, model_type, regression = FALSE)
+hydrate(output_dir, regression = FALSE)
 }
 \arguments{
 \item{output_dir}{string, location of the output model. Important: Please note that if this directory exists, it will be overwritten.}
-
-\item{model_type}{a string indicating model_type of the input model. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta". Please find this information in the \code{config.json} file of the model.}
 
 \item{regression}{logical, if \code{TRUE}, the task is regression, classification otherwise.}
 }

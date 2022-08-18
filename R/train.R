@@ -8,6 +8,17 @@
     }
 }
 
+.infer_model_type <- function(model_name) {
+    if (!dir.exists(model_name)) {
+        json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
+        json_file <- tempfile()
+        download.file(url = json_url, destfile = json_file, quiet = TRUE)
+    } else {
+        json_file <- file.path(model_name, "config.json")
+    }
+    jsonlite::fromJSON(json_file)$model_type
+}
+
 ## Create a factor-like thing that is zero-indexed. It should work with numeric vectors, char vectors and factors.
 ## The output is a vector 
 .make_0i <- function(x) {
@@ -22,20 +33,20 @@
     attr(x, "levels")[x + 1]
 }
 
-#' Finetune a pretrained Transformer model for texts
+#' Fine tune a pretrained Transformer model for texts
 #'
 #' Fine tune (or train) a pretrained Transformer model for your given training labelled data `x` and `y`. The prediction task can be classification (if `regression` is `FALSE`, default) or regression (if `regression` is `TRUE`).
 #' @param x the [corpus] or character vector of texts on which the model will be trained. Depending on `train_size`, some texts will be used for cross-validation.
 #' @param y training labels. It can either be a single string indicating which [docvars] of the [corpus] is the training labels; a vector of training labels in either character or factor; or `NULL` if the [corpus] contains exactly one column in [docvars] and that column is the training labels. If `x` is a character vector, `y` must be a vector of the same length.
-#' @param model_type a string indicating model_type of the input model. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta". Please find this information in the `config.json` file of the model.
 #' @param model_name string indicates either 1) the model name on Hugging Face website; 2) the local path of the model
 #' @param regression logical, if `TRUE`, the task is regression, classification otherwise.
 #' @param output_dir string, location of the output model. Important: Please note that if this directory exists, it will be overwritten.
 #' @param cuda logical, whether to use CUDA, default to [detect_cuda()].
-#' @param num_train_epochs numeric, if `train_size` is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5. If `train_size` is exactly 1.0, the number of epochs is exactly that.
+#' @param num_train_epochs numeric, if `train_size` is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5 (i.e. 4 * 5 = 20 by default). If `train_size` is exactly 1.0, the number of epochs is exactly that.
 #' @param train_size numeric, proportion of data in `x` and `y` to be used actually for training. The rest will be used for cross validation.
 #' @param args list, additionally parameters to be used in the underlying simple transformers
 #' @param cleanup logical, if `TRUE`, the `runs` directory generated will be removed when the training is done
+#' @param model_type a string indicating model_type of the input model. If `NULL`, it will be infered from `model_name`. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".
 #' @param manual_seed numeric, random seed
 #' @param verbose logical, if `TRUE`, debug messages will be displayed
 #' @param ... paramters pass to [grafzahl()]
@@ -46,39 +57,47 @@
 #' library(quanteda.textmodels) ## for the data only
 #' set.seed(20190721)
 #' model <- grafzahl(x = data_corpus_moviereviews, y = "sentiment",
-#'                  model_type = "bert", model_name = "bert-base-uncased",
+#'                  model_name = "bert-base-uncased",
 #'                  train_size = 1, num_train_epochs = 2)
 #' preds <- predict(model)
 #' table(preds, docvars(data_corpus_moviereviews, "sentiment"))
 #' }
 #' @seealso [predict.grafzahl()]
 #' @export
-grafzahl <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+grafzahl <- function(x, y = NULL, model_name = "xlm-roberta-base",
                      regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
-                     train_size = 0.8, args = NULL, cleanup = TRUE,
+                     train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                      manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     UseMethod("grafzahl")
 }
 
 #' @rdname grafzahl
 #' @export
-grafzahl.default <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+grafzahl.default <- function(x, y = NULL, model_name = "xlm-roberta-base",
                              regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
-                             train_size = 0.8, args = NULL, cleanup = TRUE,
+                             train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                              manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     return(NA)
 }
 
 #' @rdname grafzahl
 #' @export
-grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
-                            train_size = 0.8, args = NULL, cleanup = TRUE,
+                            train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     if (!is.integer(manual_seed)) {
         manual_seed <- as.integer(manual_seed)
     }
-    .initialize_conda(.gen_envname(cuda = cuda))
+    if (is.null(model_type)) {
+        model_type <- .infer_model_type(model_name)
+    }
+    model_type <- gsub("-", "", tolower(model_type))
+    if (!model_type %in% c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
+                           "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
+                           "squeezebert", "xlm", "xlmroberta", "xlnet")) {
+        stop("Invalid `model_type`.", call. = FALSE)
+    }
     if (is.null(y)) {
         if (ncol(quanteda::docvars(x)) == 1) {
             y <- as.vector(quanteda::docvars(x)[,1])
@@ -105,13 +124,14 @@ grafzahl.corpus <- function(x, y = NULL, model_type = "xlmroberta", model_name =
         levels <- NULL
     }
     input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
-    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     if (!dir.exists(output_dir)) {
         dir.create(output_dir)
     }
     output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- normalizePath(tempdir())
+    .initialize_conda(.gen_envname(cuda = cuda))
+    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
     result <- list(
         call = match.call(),
@@ -138,9 +158,9 @@ textmodel_transformer <- function(...) {
 
 #' @rdname grafzahl
 #' @export
-grafzahl.character <- function(x, y = NULL, model_type = "xlmroberta", model_name = "xlm-roberta-base",
+grafzahl.character <- function(x, y = NULL, model_name = "xlmroberta",
                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
-                            train_size = 0.8, args = NULL, cleanup = TRUE,
+                            train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     if (is.null(y)) {
         stop("`y` cannot be NULL when x is a character vector.", call. = FALSE)
@@ -209,10 +229,14 @@ detect_cuda <- function() {
 #' @inheritParams grafzahl
 #' 
 #' @export
-hydrate <- function(output_dir, model_type, regression = FALSE) {
+hydrate <- function(output_dir, regression = FALSE) {
     if (missing(model_type) & missing(output_dir)) {
         stop("You must provide both `output_dir` and `model_type`")
     }
+    if (is.null(model_type)) {
+        model_type <- .infer_model_type(model_name)
+    }
+    model_type <- gsub("-", "", tolower(model_type))
     result <- list(
         call = NA,
         input_data = NA,

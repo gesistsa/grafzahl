@@ -6,12 +6,11 @@
 \alias{grafzahl.corpus}
 \alias{textmodel_transformer}
 \alias{grafzahl.character}
-\title{Finetune a pretrained Transformer model for texts}
+\title{Fine tune a pretrained Transformer model for texts}
 \usage{
 grafzahl(
   x,
   y = NULL,
-  model_type = "xlmroberta",
   model_name = "xlm-roberta-base",
   regression = FALSE,
   output_dir = "./output",
@@ -20,6 +19,7 @@ grafzahl(
   train_size = 0.8,
   args = NULL,
   cleanup = TRUE,
+  model_type = NULL,
   manual_seed = floor(runif(1, min = 1, max = 721831)),
   verbose = TRUE
 )
@@ -27,7 +27,6 @@ grafzahl(
 \method{grafzahl}{default}(
   x,
   y = NULL,
-  model_type = "xlmroberta",
   model_name = "xlm-roberta-base",
   regression = FALSE,
   output_dir = "./output",
@@ -36,6 +35,7 @@ grafzahl(
   train_size = 0.8,
   args = NULL,
   cleanup = TRUE,
+  model_type = NULL,
   manual_seed = floor(runif(1, min = 1, max = 721831)),
   verbose = TRUE
 )
@@ -43,7 +43,6 @@ grafzahl(
 \method{grafzahl}{corpus}(
   x,
   y = NULL,
-  model_type = "xlmroberta",
   model_name = "xlm-roberta-base",
   regression = FALSE,
   output_dir = "./output",
@@ -52,6 +51,7 @@ grafzahl(
   train_size = 0.8,
   args = NULL,
   cleanup = TRUE,
+  model_type = NULL,
   manual_seed = floor(runif(1, min = 1, max = 721831)),
   verbose = TRUE
 )
@@ -61,8 +61,7 @@ textmodel_transformer(...)
 \method{grafzahl}{character}(
   x,
   y = NULL,
-  model_type = "xlmroberta",
-  model_name = "xlm-roberta-base",
+  model_name = "xlmroberta",
   regression = FALSE,
   output_dir = "./output",
   cuda = detect_cuda(),
@@ -70,6 +69,7 @@ textmodel_transformer(...)
   train_size = 0.8,
   args = NULL,
   cleanup = TRUE,
+  model_type = NULL,
   manual_seed = floor(runif(1, min = 1, max = 721831)),
   verbose = TRUE
 )
@@ -79,8 +79,6 @@ textmodel_transformer(...)
 
 \item{y}{training labels. It can either be a single string indicating which \link{docvars} of the \link{corpus} is the training labels; a vector of training labels in either character or factor; or \code{NULL} if the \link{corpus} contains exactly one column in \link{docvars} and that column is the training labels. If \code{x} is a character vector, \code{y} must be a vector of the same length.}
 
-\item{model_type}{a string indicating model_type of the input model. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta". Please find this information in the \code{config.json} file of the model.}
-
 \item{model_name}{string indicates either 1) the model name on Hugging Face website; 2) the local path of the model}
 
 \item{regression}{logical, if \code{TRUE}, the task is regression, classification otherwise.}
@@ -89,13 +87,15 @@ textmodel_transformer(...)
 
 \item{cuda}{logical, whether to use CUDA, default to \code{\link[=detect_cuda]{detect_cuda()}}.}
 
-\item{num_train_epochs}{numeric, if \code{train_size} is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5. If \code{train_size} is exactly 1.0, the number of epochs is exactly that.}
+\item{num_train_epochs}{numeric, if \code{train_size} is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5 (i.e. 4 * 5 = 20 by default). If \code{train_size} is exactly 1.0, the number of epochs is exactly that.}
 
 \item{train_size}{numeric, proportion of data in \code{x} and \code{y} to be used actually for training. The rest will be used for cross validation.}
 
 \item{args}{list, additionally parameters to be used in the underlying simple transformers}
 
 \item{cleanup}{logical, if \code{TRUE}, the \code{runs} directory generated will be removed when the training is done}
+
+\item{model_type}{a string indicating model_type of the input model. If \code{NULL}, it will be infered from \code{model_name}. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".}
 
 \item{manual_seed}{numeric, random seed}
 
@@ -115,7 +115,7 @@ library(quanteda)
 library(quanteda.textmodels) ## for the data only
 set.seed(20190721)
 model <- grafzahl(x = data_corpus_moviereviews, y = "sentiment",
-                 model_type = "bert", model_name = "bert-base-uncased",
+                 model_name = "bert-base-uncased",
                  train_size = 1, num_train_epochs = 2)
 preds <- predict(model)
 table(preds, docvars(data_corpus_moviereviews, "sentiment"))

@@ -6,7 +6,6 @@
 #' Theocharis, Y., Barberá, P., Fazekas, Z., & Popa, S. A. (2020). The dynamics of political incivility on Twitter. Sage Open, 10(2), 2158244020919447.
 "unciviltweets"
 
-
 .count_lang <- function(x, force_cld2 = FALSE, sampl = NULL, safety_multiplier = 1.5) {
     if (isTRUE("cld3" %in% row.names(installed.packages())) & !force_cld2) {
         trans_fun <- cld3::detect_language
@@ -32,3 +31,4 @@
                    caseness = any(caseness), longest = longest)
     return(output)
 }
+
