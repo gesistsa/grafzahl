@@ -222,10 +222,14 @@ print.grafzahl <- function(x, ...) {
 #' @return boolean, whether cuda is available.
 #' @export
 detect_cuda <- function() {
-    allenvs <- reticulate::conda_list()$name
-    .initialize_conda(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
-    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    return(py_detect_cuda())
+    if (Sys.getenv("KILL_SWITCH") != "KILL") {
+        allenvs <- reticulate::conda_list()$name
+        .initialize_conda(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
+        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+        return(py_detect_cuda())
+    } else {
+        return(NA)
+    }
 }
 
 #' Create a grafzahl S3 object from the output_dir
