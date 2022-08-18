@@ -124,16 +124,18 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
         levels <- NULL
     }
     input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
-    if (!dir.exists(output_dir)) {
-        dir.create(output_dir)
-    }
-    output_dir <- normalizePath(output_dir)
-    best_model_dir <- file.path(output_dir, "best_model")
-    cache_dir <- normalizePath(tempdir())
     if (Sys.getenv("KILL_SWITCH") != "KILL") {
+        if (!dir.exists(output_dir)) {
+            dir.create(output_dir)
+        }
+        output_dir <- normalizePath(output_dir)
+        best_model_dir <- file.path(output_dir, "best_model")
+        cache_dir <- normalizePath(tempdir())
         .initialize_conda(.gen_envname(cuda = cuda))
         reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
         py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
+    } else {
+        output_dir <- NA ## no littering if this is a test
     }
     result <- list(
         call = match.call(),
