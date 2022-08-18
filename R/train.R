@@ -215,7 +215,17 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
 #' @method print grafzahl
 #' @export
 print.grafzahl <- function(x, ...) {
-    return(NA)
+    if (is.data.frame(x$input_data)) {
+        n_training <- nrow(x$input_data)
+    }
+    cat("\nCall:\n")
+    print(x$call)
+    cat("\n",
+        "output_dir:", x$output_dir, ";",
+        "model_type:", x$model_type, ";",
+        "model_name:", x$model_name, ";",
+        n_training, "training documents; ",
+        "\n", sep = " ")
 }
 
 #' Detect cuda
@@ -250,7 +260,7 @@ hydrate <- function(output_dir, model_type = NULL, regression = FALSE) {
     model_type <- gsub("-", "", tolower(model_type))
     result <- list(
         call = NA,
-        input_data = NA,
+        input_data = NULL,
         output_dir = output_dir,
         model_type = model_type,
         model_name = NA,
