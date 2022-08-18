@@ -130,9 +130,11 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
     output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- normalizePath(tempdir())
-    .initialize_conda(.gen_envname(cuda = cuda))
-    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
+    if (Sys.getenv("KILL_SWITCH") != "KILL") {
+        .initialize_conda(.gen_envname(cuda = cuda))
+        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+        py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
+    }
     result <- list(
         call = match.call(),
         input_data = input_data,
@@ -182,7 +184,7 @@ grafzahl.character <- function(x, y = NULL, model_name = "xlmroberta",
 #'
 #' Make prediction from a fine-tuned grafzahl object.
 #' @param object an S3 object trained with [grafzahl()]
-#' @param newdata a [corpus] or a character vector of texts on which prediction should be made
+#' @param newdata a [corpus] or a character vector of texts on which prediction should be made.
 #' @inheritParams grafzahl
 #' @param return_raw logical, if `TRUE`, return a matrix of logits; a vector of class prediction otherwise
 #' @param ... not used
@@ -196,13 +198,16 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
         }
         newdata <- object$input_data$text
     }
-    .initialize_conda(.gen_envname(cuda = cuda))
-    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
-    if (return_raw | is.null(object$levels)) {
-        return(res)
+    if (Sys.getenv("KILL_SWITCH") != "KILL") {
+        .initialize_conda(.gen_envname(cuda = cuda))
+        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+        res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
+        if (return_raw | is.null(object$levels)) {
+            return(res)
+        }
+        return(object$levels[res + 1])
     }
-    return(object$levels[res + 1])
+    return(NA)
 }
 
 #' @method print grafzahl

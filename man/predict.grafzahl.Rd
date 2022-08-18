@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{an S3 object trained with \code{\link[=grafzahl]{grafzahl()}}}
 
-\item{newdata}{a \link{corpus} or a character vector of texts on which prediction should be made}
+\item{newdata}{a \link{corpus} or a character vector of texts on which prediction should be made.}
 
 \item{cuda}{logical, whether to use CUDA, default to \code{\link[=detect_cuda]{detect_cuda()}}.}
 
