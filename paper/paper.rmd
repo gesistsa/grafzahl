@@ -1,25 +1,25 @@
 ---
-title             : "grafzahl"
+title             : "grafzahl: fine-tuning Transformers for text data from within R"
 shorttitle        : "PUT THE R BACK IN TRANSFORMERS"
 
 author: 
   - name          : "Chung-hong Chan"
     affiliation   : "1"
     corresponding : yes
-    address       : "A5, 6 (section A), 68159 Mannheim, Germany"
-    email         : "chung-hong.chan@mzes.uni-mannheim.de"
+    address       : "Unter Sachsenhausen 6-8, 50667 Köln"
+    email         : "chainsawtiney@gmail.com"
 
 affiliation:
   - id            : "1"
-    institution   : "Mannheimer Zentrum für Europäische Sozialforschung, Universität Mannheim, Germany"
+    institution   : "GESIS - Leibniz-Institut für Sozialwissenschaften, Germany"
     
 authornote: |
   Source code and data are available at (redacted). The author(s) would like to thank Jarvis Labs for providing discounted GPU cloud service for the development of this package.
 
 abstract: |
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-keywords          : "Bayesian inference, multilevel model, comparative communication research, ecological effect"
-wordcount         : "8964"
+  This paper introduces `grafzahl`, an R package for fine-tuning Transformers for text data from within R. The package combines the ease of use of the `quanteda` R ecosystem and the state-of-the-art `Transformers` Python library. The package is used in this paper to reproduce the analyses in communication papers or, of non-Germanic benchmark datasets. Very significant improvement in model accuacy over traditional machine learning approach such as Convoluted Neural Network is observed. `grafzahl` might have a role in the mainstreamization of Transformer-based machine learning methods for communication research and beyond.
+keywords          : "machine learning, transformers, R, python, automated content analysis"
+wordcount         : "5649"
 
 bibliography      : ["/home/chainsawriot/dev/dotfiles/bib.bib"]
 
@@ -49,31 +49,37 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
-# The language for training sypervised machine learning models
+# The language for training supervised machine learning models
 
 *"If supervised machine learning is at the core of your project, it may save you a lot of cursing to do this in Python."* [@van2022computational]
 
-When it comes to comparing R and Python, there is an impression that R is not suitable for supervised machine learning. The above quote from a recent textbook on computational communication research captures such that sentiment.
+When it comes to comparing R and Python, there is an impression that R is not suitable for supervised machine learning. The above quote from a recent textbook on computational communication research captures that sentiment.
 
-Undoubtly, there are many great Python libraries available that makes Python **the** language for training supervised machine learning models. Some examples of these libraries are `scikit-learn` [@pedregosa2011scikit], `keras` [@chollet2015keras], and `transformers` [@wolf-etal-2020-transformers]. The last example is particular important because pre-trained Transformers (sometimes called Large Language Models or Foundation Models) such as BERT [@devlin2018bert] and the associated technique of fine-tuning [@howard:2018:ULM] (also known as transfer learning) have been extremely powerful for social scientific applications. In one such social scientific application [@widmann:2022:CCD], for example, a Transformer-based model provides in average 18-point higher F1 scores than dictionary-based methods; 9-point higher than the so-called end-to-end supervised neural network model with locally trained word embeddings (loosely dubbed as one of the "standard deep learning architectures").
+Undoubtedly, there are many great Python libraries available that makes Python **the** language for training supervised machine learning models. Some examples of these libraries are `scikit-learn` [@pedregosa2011scikit], `keras` [@chollet2015keras], and `transformers` [@wolf-etal-2020-transformers]. The last example is particular important because pre-trained Transformers (sometimes called Large Language Models or Foundation Models) such as BERT [@devlin2018bert] and the associated technique of fine-tuning [@howard:2018:ULM] (also known as transfer learning) have been extremely powerful for social scientific applications [^FINE]. In one such social scientific application [@widmann:2022:CCD], for example, a Transformer-based model provides in average 18-point higher F1 scores than dictionary-based methods; 9-point higher than the so-called end-to-end supervised neural network model with locally trained word embeddings (loosely dubbed as one of the "standard deep learning architectures").
+
+[^FINE]: A pretrained neural network model on a certain task can capture the general knowledge about languages. The idea of fine-tuning is to freeze certain layers in a pretrained neural network, thereby keeps the general knowledge about languages. And then remove the last few layers (or even remove just the output layer), and retrain (or fine-tune) the last few layers of the model using the new data. The advantage of this technique is that the model doesn't need to learn the general knowledge again from the training data, but yet the model only needs to learn the domain knowledge from the data.
 
 ## Put the R back in Transformers
 
-Many communication researchers were (and still are) introduced to text analysis with R [@rcore]. In 2017, a co-author of the abovementioned textbook wrote: "R is a powerful platform for computational text analysis, that can be a valuable tool for communication research. ... its well developed packages provide easy access to cutting edge text analysis techniques." [@welbers:2017:TAR, p. 262] `quanteda` [@benoit:2018], probably the most used R package by communication researchers for text analysis, has been extended with packages such as `newsmap` [@watanabe:2017:N], `LSX` [@watanabe2021latent], and `rectr` [@chan:2020:REC]. The papers of these packages were published in communication journals, a telling sign of their usefulness for communication research.
+Many communication researchers were (and still are) introduced to text analysis with R [@rcore]. In 2017, a co-author of the aforementioned textbook wrote: "R is a powerful platform for computational text analysis, that can be a valuable tool for communication research. ... its well developed packages provide easy access to cutting edge text analysis techniques." [@welbers:2017:TAR, p. 262] `quanteda` [@benoit:2018], probably the most used R package by communication researchers for text analysis, has been extended with packages such as `newsmap` [@watanabe:2017:N], `LSX` [@watanabe2021latent], and `rectr` [@chan:2020:REC]. The papers of these packages were published in communication journals, a telling sign of their usefulness for communication research.
 
-As many supervised machine learning tools are exclusively in Python, communication researchers who use R need to make a choice: 1) export the data from R to Python and then do the analysis there; or 2) swith the workflow entirely to Python. The author(s) of this paper saw both patterns [^PATTERNS].
+As many supervised machine learning tools are exclusively in Python, communication researchers who use R need to make a choice: 1) export the data from R to Python and then do the analysis there; or 2) switch the workflow entirely to Python. The author(s) of this paper saw both patterns [^PATTERNS].
 
 [^PATTERNS]: An Example of the former: https://github.com/vanatteveldt/ecosent/ and the latter: https://github.com/annekroon/dictionaries-vs-sml
 
-The purpose of this R package, `grafzahl`, is to provide the missing linkage between the `quanteda` ecosystem and modern Transfomers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. Therefore, there is no need to switch back and forth between programming languages. This package provides the function `grazahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. Thus, users of that package would find the current package extremely familiar. The author(s) of this package argue that there is almost zero overhead for `quanteda` users to use this package [^quanteda].
+The purpose of this R package, `grafzahl`, is to provide the missing link between the `quanteda` ecosystem and modern Transformers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. Therefore, there is no need to switch back and forth between programming languages. This package provides the function `grazahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. Thus, users of that package would find the current package extremely familiar. The author(s) of this package argue that there is almost zero overhead for `quanteda` users to use the current package [^quanteda].
 
 [^quanteda]: For R users who are not familiar with `quanteda`, the official website of the package (https://quanteda.io/) provides excellent tutorials. The end of this paper also provides an express introduction to the `corpus` object.
 
-This package uses reasonable default settings that suit what communication researchers would like to archieve with these pretrained Transformers models. But the package also provides the freedom for communication researchers to finely adjust the parameters for their specific applications. However, the reanalysis of several examples in communication and related disciplines suggests that even the default settings can generate great improvement over the performance as reported in the original papers. Also, there is almost no need to conduct the cumbersome proprocessing and feature engineering steps, which all examples originally required.
+This package uses reasonable default settings which suit what communication researchers would like to achieve with these pretrained Transformers models. But the package also provides the freedom for communication researchers to finely adjust the parameters for their specific applications. However, the reanalysis of several examples in communication suggests that even the default settings can generate great improvement over the performance as reported in the original papers. Also, there is almost no need to conduct the cumbersome proprocessing and feature engineering steps, which all examples originally required.
+
+An installable, anonymized version of the package is available from this view-only link: https://osf.io/dfhe5/?view_only=c9fbae773c7e4732ba7e638d08cedc02
+
+See Appendix III for the installation guide.
 
 ## Related work
 
-As of writing, `grafzahl` is the only R package that makes Transformer-based supervised learning easier. There are several similar packages. `text` [@kjell_giorgi_schwartz_2021] and `golgotha` [@golgotha] are two packages which also link the Python package `transformers` to R. But the two packages focus on generating contextual embeddings, not as an all-in-one "two-line" solution for supervised machine learning. See the examples below.
+As of writing, `grafzahl` is the only R package that makes Transformer-based supervised learning easier. There are several similar packages. `text` [@kjell_giorgi_schwartz_2021] and `golgotha` [@golgotha] are two packages which also link the Python package `transformers` to R. But the two packages focus on generating contextual embeddings, not as an all-in-one "two-line" solution for supervised machine learning. See the examples below for the "two-line" solution.
 
 A blog post by RStudio AI [@abdullayev2020state-of-the-art] explains how to integrate the Python package `transformers` from scratch using `reticulate`. The method involves using `transformers` to preprocess the text data and then `keras` for supervised machine learning.
 
@@ -85,10 +91,10 @@ For Python users, there have been several easy-to-use solutions for supervised l
 
 The default settings of this package assume a usual "early stopping" workflow as following:
 
-1. The labeled data have been splited into two sets: training set and test set. This step must be done manually because it is not entirely a methodological issue.
+1. The labeled data have been split into two sets: training set and test set. This step must be done manually because it is not entirely a methodological issue.
 2. The input data to the training function is the training set
 3. The training set is further split in a 80:20 basis into the actual training set (ATS) and cross-validation set (CVS).
-4. In an epoch, ATS is used to fine tune a Transformer. CVS is used to evaluate the out-of-sample performance.
+4. In an epoch, ATS is used to fine-tune a Transformer. CVS is used to evaluate the out-of-sample performance.
 5. If the out-of-sample performance does not improve for two epochs, the training stops.
 
 It is possible to override this default by manually adjusting the parameter `train_size` to exactly 1 and control the number of epochs with `num_train_epochs`.
@@ -120,11 +126,11 @@ setup_grafzahl(cuda = TRUE) # set to FALSE otherwise
 
 ### Step 1: Get information of the pretrained Transformer
 
-The first step of training a Transformer-based model is to find a suitable pretrained Transformer model on Hugging Face [^hugg], which would work for the data. As the data are in Dutch, a pretrained Dutch Trasformer model such as BERTje should work [@de2019bertje, available from https://huggingface.co/GroNLP/bert-base-dutch-cased]. The model name of this model is `GroNLP/bert-base-dutch-cased`. It is also important to note the citation information to properly cite the pretrained Transformer model.
+The first step of training a Transformer-based model is to find a suitable pretrained Transformer model on Hugging Face [^hugg], which would work for the data. As the data are in Dutch, a pretrained Dutch Transformer model such as BERTje should work [@de2019bertje, available from https://huggingface.co/GroNLP/bert-base-dutch-cased]. The model name of this model is `GroNLP/bert-base-dutch-cased`. It is also important to note the citation information to properly cite the pretrained Transformer model.
 
 [^hugg]: Hugging Face (https://huggingface.co) is an online repository of pretrained machine learning models. 
 
-### Step 2: Prepare the corpus
+### Step 2: Create the corpus
 
 The second step is to read the data as a corpus [^CORPUS]. The easiest way to do that is to use the R package `readtext` [@readtext].
 
@@ -144,9 +150,9 @@ We can manipulate the corpus object using the functions provided by `quanteda`. 
 training_corpus <- corpus_subset(input, !gold)
 ```
 
-### Step 3: Fine tune the model
+### Step 3: Fine-tune the model
 
-With the corpus and model name, the `grafzahl` function is used to fine tune the model.
+With the corpus and model name, the `grafzahl` function is used to fine-tune the model.
 
 ```r
 model <- grafzahl(x = training_corpus,
@@ -182,15 +188,15 @@ require(caret)
 confusionMatrix(cm, mode = "prec_recall")
 ```
 
-The out-of-sample F1 measures of the fine-tuned model are .76, .67, and .72 (vs reported .63, .66, and .56). There is great improvement over the CNN model reported by @atteveldt:2021:VSA, althought the prediction accuracy for the neutral category is just on par.
+The out-of-sample F1 measures of the fine-tuned model are .76, .67, and .72 (vs reported .63, .66, and .56). There is great improvement over the CNN model reported by @atteveldt:2021:VSA, although the prediction accuracy for the neutral category is just on par. The overall accuracy of the fine-tuned model is similar to the case of "Crowd-coding (Single Coder)" reported in the original paper.
 
-[^caret]: The function `confusionMatrix()` can accept the predicted values and ground truth directly, without using `table()` first. But the predicted values and grouth truth must be `factor`: `confusionMatrix(as.factor(predicted_sentiment), as.factor(docvars(test_corpus, "value")), mode = "prec_recall")`. 
+[^caret]: The function `confusionMatrix()` can accept the predicted values and ground truth directly, without using `table()` first. But the predicted values and ground truth must be `factor`: `confusionMatrix(as.factor(predicted_sentiment), as.factor(docvars(test_corpus, "value")), mode = "prec_recall")`. 
 
 ### Step 5: Explain the prediction
 
-Unlike "glass-box" machine learning models [@dobbrick:2021:ETI], Transformer-based prediction models are "black-box". There are so many parameters in Transformers (the BERT base model has 110 million parameters) and this complexity makes each individual parameter of a model difficult to interpret.
+Unlike "glass-box" machine learning models [@dobbrick:2021:ETI], Transformer-based prediction models are "black-box". There are so many parameters in Transformers (the BERT base model has 110 million parameters) and this complexity makes each individual parameter of a model not interpretable.
 
-A reasonable compromise is to make the prediction explainable instead. Generating Local Interpretable Model-agnostic Explanations (LIME) [@ribeiro2016should; R implementation by @lime] is a good way to explain how the model makes its prediction. The gist of the method is to perturb the input text data by deleting parts of the sentence. For example: the sentence "I hate this movie" will be perturbed as "I this movie", "I hate movie", "I hate this", "I hate" etc. These perturbed sentences are then feeded into the machine learning model to make predictions. The relationship between what get deleted and the prediction is studied. The parts that change the prediction a lot would be more *causal* to the original prediction.
+A reasonable compromise is to make the prediction *explainable* instead. Generating Local Interpretable Model-agnostic Explanations (LIME) [@ribeiro2016should; R implementation by @lime] is a good way to explain how the model makes its prediction. The gist of the method is to perturb the input text data by deleting parts of the sentence. For example: the sentence "I hate this movie" will be perturbed as "I this movie", "I hate movie", "I hate this", "I hate" etc. These perturbed sentences are then feed into the machine learning model to make predictions. The relationship between what get deleted and the prediction is studied. The parts that change the prediction a lot would be more *causal* to the original prediction.
 
 With the trained model, we can explain the predictions made for the following two Dutch headlines: *"Dijsselbloem pessimistisch over snelle stappen Grieken"* (Dijsselbloem [the Former Minister of Finance of the Netherlands] pessimistic about rapid maneuvers from Greeks) and *"Aandelenbeurzen zetten koersopmars voort"* (Stock markets continue to rise). Models trained with `grafzahl` support the R package `lime` directly. One can get explanations using the following code:
 
@@ -208,7 +214,7 @@ plot_text_explanations(explanations)
 knitr::include_graphics("fig1.png")
 ```
 
-Figure \@ref(fig:fig1) shows that for the sentence *"Dijsselbloem pessimistisch over snelle stappen Grieken"* (classified as negative), the tokens *pessimistisch* and *stappen* are making the prediction towards the classified position. But the token *Dijsselbloem* is making it away.
+Figure \@ref(fig:fig1) shows that for the sentence *"Dijsselbloem pessimistisch over snelle stappen Grieken"* (classified as negative), the tokens *pessimistisch* and *stappen* are making the prediction towards the classified position (negative). But the token *Dijsselbloem* is making it away.
 
 # Multilingual regression example
 
@@ -218,7 +224,7 @@ Figure \@ref(fig:fig1) shows that for the sentence *"Dijsselbloem pessimistisch 
 
 ## Workflow
 
-The workflow is similar to the one described above. One important modification is that the parameter `regression` is `TRUE` (default to `FALSE`) this time. Also, unlike the original paper [@dobbrick:2021:ETI], only one model based on the distilled multilingual BERT [@sanh2019distilbert] is trained. The distilled multilingual BERT supports 104 languages, therein include German and English. The distilled multilingual BERT retains 97\% of the performance of the original multilingual BERT but is 40\% smaller. Therefore, it is less computational expensive to fine tune, especially useful in the case of fine-tuning on an off-the-shelf gaming laptop with a limited amount of GPU ram.
+The workflow is similar to the one described above. One important modification is that the parameter `regression` is `TRUE` (default to `FALSE`) this time. Also, unlike the original paper [@dobbrick:2021:ETI], only one model based on the distilled multilingual BERT [@sanh2019distilbert] is trained. The distilled multilingual BERT supports 104 languages, therein include German and English. The distilled multilingual BERT retains 97\% of the performance of the original multilingual BERT but is 40\% smaller. Therefore, it is less computational expensive to fine-tune, especially useful in the case of fine-tuning on an off-the-shelf gaming laptop with a limited amount of GPU ram.
 
 ```r
 mod <- grafzahl(x = en_corpus + de_corpus,
@@ -235,15 +241,15 @@ Apply the same 10-fold cross-validation setup, the RMSE for English and German a
 
 # Non-Germanic example: Amharic
 
-The two examples above feature three Germanic languages: Dutch, English and German and demonstrate remarkable performance of `grafzahl` in working on Germanic languages, even cross-lingually. However, the author(s) want to emphasize that `grafzahl` is not just another package focusing only on English, or Germanic languages in general. @baden:2021:TGC criticize this tendency: *"Researchers are far more likely to find and apply suitable CTAM (computational text analysis methods) for studying English texts, privileging anglophone researchers and anglophone research sites. Where researchers intend to study textual material in other languages, by contrast, CTAM often require considerable efforts at adaptation, fall short in performance or are entirely unavailable, with painful consequences for the diversification and de-Westernization of social science research"* (p. 11). 
+The two examples above feature three Germanic languages: Dutch, English and German. They demonstrate remarkable performance of `grafzahl` in working on Germanic languages, even cross-lingually. However, the author(s) want to emphasize that `grafzahl` is not just another package focusing only on English, or Germanic languages in general. @baden:2021:TGC criticize this tendency: *"Researchers are far more likely to find and apply suitable CTAM (computational text analysis methods) for studying English texts, privileging anglophone researchers and anglophone research sites. Where researchers intend to study textual material in other languages, by contrast, CTAM often require considerable efforts at adaptation, fall short in performance or are entirely unavailable, with painful consequences for the diversification and de-Westernization of social science research"* (p. 11). 
 
 In view of this, the current author(s) present two additional examples on how `grafzahl` can help to ease this English and Germanic languages dominance.
 
-Amharic is a Semitic language spoken mainly in Ethiopia. After Arabic, Amharic is the second most-spoken Semitic language. Unlike many Semitic languages using the *abjad* (consonant-only) writing system, Amharic is written in a unique alphasyllabary writing system called *Ge'ez*. Syntactically, Amharic is also different from many Germanic languages for its SOV (subject-object-verb) word order [^SOV]. It is in general considered to be a "low resource" language. On @joshi2020state 's rating of 0 ("The Left-Behinds", such as the Polynesian language Wallisian) to 5 ("The Winners", such as English and German) on resourcefulness, Amharic has a rating of 2. Only recently, the first news classification dataset called "Amharic News Text classification Dataset" is available [@azime2021amharic].
+Amharic is a Semitic language mainly spoken in Ethiopia. After Arabic, Amharic is the second most-spoken Semitic language. Unlike many Semitic languages using the *abjad* (consonant-only) writing system, Amharic is written in a unique alphasyllabary writing system called *Ge'ez*. Syntactically, Amharic is also different from many Germanic languages for its SOV (subject-object-verb) word order [^SOV]. It is in general considered to be a "low resource" language. On @joshi2020state 's rating of 0 ("The Left-Behinds", such as the Polynesian language Wallisian) to 5 ("The Winners", such as English and German) on resourcefulness, Amharic has a rating of 2. Only recently, the first news classification dataset called "Amharic News Text classification Dataset" is available [@azime2021amharic].
 
 [^SOV]: Actually, majority of the languages are SOV, while SVO (many Germanic languages) are slightly less common.
 
-Amharic News Text classification Dataset contains 50,706 news articles curated from various Amharic websites. The original paper reports the baseline performance using Naive Bayes. The baseline out-of-sample accuracy is 62.2\%. The released data also contains the training-and-test split [^Amharic]. It is a much bigger dataset than the two previous examples (training set: 41,185 articles, test set: 10,287). News articles were annotated into the following categories (originally written in *Ge'ez*, transliterated to Latin characters here): *hāgeri āk’efi zēna* (national news), *mezinanya* (entertainment), *siporiti* (sport), *bīzinesi* (business), *‘alemi āk’efi zēna* (international news), and poletīka (politics).
+Amharic News Text classification Dataset contains 50,706 news articles curated from various Amharic websites. The original paper reports the baseline out-of-sample accuracy of 62.2\% using Naive Bayes. The released data also contains the training-and-test split [^Amharic]. It is a much bigger dataset than the two previous examples (training set: 41,185 articles, test set: 10,287). News articles were annotated into the following categories (originally written in *Ge'ez*, transliterated to Latin characters here): *hāgeri āk’efi zēna* (national news), *mezinanya* (entertainment), *siporiti* (sport), *bīzinesi* (business), *‘alemi āk’efi zēna* (international news), and *poletīka* (politics).
 
 [^Amharic]: https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/tree/main
 
@@ -293,17 +299,25 @@ The final out-of-sample Macro F1 is 78.25\%, which is just 5\% shy of the state-
 
 # Conclusion
 
-This paper presents the R packages `grafzahl` and demonstrates its applicability to communication research by replicating the supervised machine learning part of published communication research. The author(s) of this paper believe that `grafzahl` could play an important role in mainstreamization of modern Transformer-based supervised machine learning. The "two-line solution", as illustrated in the various examples, shows how easy it is to train models with almost state-of-the-art performance from the csv file.
+This paper presents the R packages `grafzahl` and demonstrates its applicability to communication research by replicating the supervised machine learning part of published communication research. The author(s) of this paper believe that `grafzahl` could play an important role in mainstreamization of modern Transformer-based supervised machine learning. The "two-line solution", as illustrated in the various examples, shows how easy it is to produce models with almost the state-of-the-art performance straightly from the csv file.
 
-The package inherits concerns from the whole notion of Transformer-based machine learning. The first concern is about the black-box nature of Transformers [@dobbrick:2021:ETI]. This black-box nature could also hide the social concerns of these complex systems such as social biases and potential harms [@boyarskaya2020overcoming]. The current author(s) acknowledge that Transformers are black-box. But the current R package is intended to help communication researchers to develop supervised machine learning models for automated content analyses. The potential harms, in comparison to other so-called AI systems, should be relatively small. But still, the current author(s) apply the Reponsible AI Innovation framework by @boyarskaya2020overcoming to fully evaluate who is vulnerable. The first group might be human coders because their job might be at risk. The second group might be the actors mentioned in the training material might be unfairly classified with negative attributes. For the first group, the current author(s) could not think of a technical solution to mitigate the harm. For the second group, however, the support for LIME [@ribeiro2016should] is at least helpful to diagnose the potential social biases.
+The package inherits concerns from the whole notion of Transformer-based machine learning. The first concern is about the black-box nature of Transformers [@dobbrick:2021:ETI]. This black-box nature could also hide the social concerns of these complex systems such as social biases and potential harms [@boyarskaya2020overcoming]. The current author(s) acknowledge that Transformers are black-box. But the current R package is intended to help communication researchers to develop supervised machine learning models for automated content analyses. The potential harms, in comparison to other so-called AI systems, should be relatively small. But still, the current author(s) apply the Responsible AI Innovation framework by @boyarskaya2020overcoming to fully evaluate who is vulnerable. The first vulnerable group might be human coders, because their job might be at risk. Using the first example, @atteveldt:2021:VSA provide the learning curve of two machine learning algorithms: CNN and Support Vector Machine (SVM). A learning curve plots the out-of-sample prediction performance as a function of number of training examples. The current author(s) repeat the analysis in a similar manner to @atteveldt:2021:VSA and plot the learning curve of Transformer-based model trained using the default "early stopping" workflow of `grafzahl`. Figure \@ref(fig:fig2) show the fine-tuned Transformer model's learning curve alongside CNN's and SVM's. The fune-tuned model has much better performance than CNN and SVM even with only 500 training examples. Unlike CNN and SVM, the gain in performance appears to plateau after 2500. It points to the fact that one does not need to have a lot of training data to fine-tune a Transformer model. 
 
-Figure \@ref(fig:fig1) shows how LIME could be useful for evaluating social biases. For the sentence, *"Dijsselbloem pessimistisch over snelle stappen Grieken"*, the LIME analysis shows that the features that lead to the negative evaluation are *pessimistisch* and *stappen*, but not the group name *Grieken*. The prediction model appears to be fair, at least for this prediction.
+```{r fig2, fig.cap = "Learning curve of machine learning algorithms"}
+readRDS(here::here("paper/learning.RDS"))
+```
 
-The second concern is the computational power required for this kind of model. Although no special hardware is required to run this software, CUDA-compatible GPUs could greatly speedy up the training. Even the author(s) (developer(s)) of `grafzahl` cannot afford to buy GPU(s) due to the current chip crunch (the main development was conducted on a rented gaming laptop). This might create another asymmetry to access and privilege those who could have access to these hardware, mainly those researchers from the Global North.
+The second vulnerable group might be the actors who could be unfairly classified with negative attributes. For this group, the support for LIME [@ribeiro2016should] is at least helpful to diagnose the potential social biases. Figure \@ref(fig:fig1) shows how LIME could be useful for evaluating social biases. For the sentence, *"Dijsselbloem pessimistisch over snelle stappen Grieken"*, the LIME analysis shows that the features that lead to the negative evaluation are *pessimistisch* and *stappen*, but not the group name *Grieken*. The prediction model appears to be fair, at least for this prediction.
+
+The second concern is the computational power required for this kind of model. Although no special hardware is required to run this software, CUDA-compatible GPUs could greatly speed up the process. Even the author(s) of `grafzahl` cannot afford to buy GPU(s) due to the current chip crunch (the main development was conducted on a rented gaming laptop). This might create another asymmetry to access and privilege those who could have access to these hardware, mainly those researchers from the rich Global North.
 
 This cannot be solved by any technical solution and indeed GPU power is a valuable resource. The author(s) are working on making `grafzahl` runnable on the free tier of Google Colab and Amazon SageMaker Lab. This is not a solution but at least it helps to equalize the access.
 
-The third concern is the carbon footprint. The study by @strubell2019energy suggest that training BERT from scratch has the same carbon footprint to 5 cars in their lifetimes. The current author(s) argue that `grafzahl` is actually mitigating the problem by encouraging researchers to reuse (retrain) existing models and **not** to train any model from scratch. The carbon footprint to retrain a model is a tiny fraction of training BERT from scratch. However, even with that, the retraining might have a higher carbon footprint than other classic analytical techniques (classic machine learning such as regularized logistic regression or even dictionary-based method). Depending on tasks, Transformer-based supervised machine learning is not always helpful. In the first example, the neglible improvement of the Transformer-based model for classifying "neutral" Dutch headlines is the case in point.
+The third concern is the carbon emission. The study by @strubell2019energy suggest that training BERT from scratch has the same carbon footprint to 5 cars in their lifetimes. The current author(s) argue that `grafzahl` is actually mitigating the problem by encouraging researchers to reuse (fine-tune) existing models and **not** to train any model from scratch. The carbon footprint to fine-tune a model is a tiny fraction of training BERT from scratch [^Estimation]. However, even with that, the procedure might still have a higher carbon footprint than other classic analytical techniques (classic machine learning such as regularized logistic regression or even dictionary-based method). Depending on tasks, Transformer-based supervised machine learning is not always helpful. In the first example, the neglible improvement of the Transformer-based model for classifying "neutral" Dutch headlines is the case in point.
+
+[^Estimation]: Using the parameters from @strubell2019energy, the fine-tuning of the model in the first example emits .094 lbs of carbon(20 minutes of single GPU computing), or 0.00007% of **one** car's lifetime carbon emission.
+
+The current author(s) ends this paper with the following: *"For unto whomsoever much is given, of him shall be much required: and to whom men have committed much, of him they will ask the more."* Please use this package cautiously and responsibly.
 
 # Appendix I: Understanding `corpus` object
 
@@ -421,7 +435,7 @@ The `model_name` parameter can either be the model name on Hugging Face (e.g. `x
 
 As `model_name` can be a local path, it is possible to preserve a copy of the model locally for reproducibility purposes.
 
-Suppose one wants to preserve model `castorini/afriberta_base` locally. As all models on Hugging Face are stored as a Git repository, one can use git to clone the model locally. A cloned model usually takes around 1G of local storage.
+Suppose one wants to preserve the model `castorini/afriberta_base` locally. As all models on Hugging Face are stored as a Git repository, one can use git to clone the model locally. A cloned model usually takes around 1G of local storage.
 
 ```bash
 ## make sure you have installed git lfs
@@ -441,11 +455,19 @@ model <- grafzahl(x = input,
                   model_name = "localafriberta")
 ```
 
-In most of the situations, one doesn't need to care about `model_type`. All examples in this paper do not need to specify `model_type`, because `model_type` will be infered automatically from `model_name` [^INFER].
+In most of the situations, one doesn't need to care about `model_type`. All examples in this paper do not need to specify `model_type`, because `model_type` will be inferred automatically from `model_name` [^INFER].
 
 [^INFER]: The mechanism is to analyze the `config.json` file (the so-called "model card"), either online on Hugging Face or in a local directory.
 
-One important exception is `vinai/bertweet-base`. The model will be infered as `roberta`. It is perfectly fine to use the infered value. However, it would be better to provide the `model_type` manually as `bertweet` so that emojis are also included in the fine tuning.
+One important exception is `vinai/bertweet-base`. The model will be inferred as `roberta`. It is perfectly fine to use the inferred value. However, it would be better to provide the `model_type` manually as `bertweet` so that emojis are also included in the fine-tuning.
+
+# Appendix III: Installation guide
+
+Unfortunately, the R package `osfr` doesn't support view-only links. Therefore, one must download the file `grafzahl.tgz` manually.
+
+```r
+install.packages("grafzahl.tgz", dependencies = TRUE, repos = NULL)
+```
 
 # References
 
