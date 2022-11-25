@@ -8,19 +8,16 @@ Description: The goal of grafzahl is to duct tape the quanteda ecosystem to mode
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests: 
-    cld3,
     quanteda.textmodels,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
-    cld2,
     jsonlite,
     lime,
     quanteda,
     reticulate,
-    stringi,
     utils,
     stats
 LazyData: true
