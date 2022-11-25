@@ -64,7 +64,7 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     } else {
         yml_file <- "grafzahl.yml"
     }
-    system2(conda_path, args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname, "python=3.9"))
+    system2(conda_path, args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname, "python=3.10"))
     if (cuda) {
         .install_gpu_pytorch(cuda_version = cuda_version)
     }
