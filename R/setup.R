@@ -16,7 +16,7 @@
 .install_gpu_pytorch <- function(cuda_version) {
     .initialize_conda(.gen_envname(cuda = TRUE))
     conda_path <- file.path(reticulate::miniconda_path(), "bin/conda")
-    system2(conda_path, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-y"))
+    system2(conda_path, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", "pytorch-cuda", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-c", "nvidia", "-y"))
     python_path <- reticulate::py_config()$python
     system2(python_path, args = c("-m", "pip", "install", "simpletransformers"))
 }
