@@ -100,6 +100,7 @@ Several extended examples are also available.
 | Examples                    | file                                           |
 | --------------------------- | ---------------------------------------------- |
 | van Atteveldt et al. (2021) | [paper/vanatteveldt.md](paper/vanatteveldt.md) |
+| Dobbrick et al. (2021)      | [paper/dobbrick.md](paper/dobbrick.md)         |
 
 ## Some common choices of `model_name`
 
