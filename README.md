@@ -93,7 +93,15 @@ predict(model)
 
 That is it.
 
-## Some common choices
+## Extended examples
+
+Several extended examples are also available.
+
+| Examples                    | file                                           |
+| --------------------------- | ---------------------------------------------- |
+| van Atteveldt et al. (2021) | [paper/vanatteveldt.md](paper/vanatteveldt.md) |
+
+## Some common choices of `model_name`
 
 | Your data         | model\_type | model\_name                        |
 | ----------------- | ----------- | ---------------------------------- |
