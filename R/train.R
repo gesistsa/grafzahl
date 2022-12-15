@@ -6,17 +6,48 @@
             print(paste0("Conda environment ", envname, " is initialized.\n"))
         }
     }
+    return(invisible(NULL))
+}
+
+## .load_python <- function(envname, verbose = FALSE) {
+##     .initialize_conda(envname = envname, verbose = verbose)
+##     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+##     return(invisible(NULL))
+## }
+
+.download_from_huggingface <- function(model_name, json_file = tempfile()) {
+    json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
+    tryCatch({
+        suppressWarnings(download.file(url = json_url, destfile = json_file, quiet = TRUE))
+    }, error = function(e) {
+        stop("Fail to download the model `", model_name, "` from Hugging Face", call. = FALSE)
+    })
+    return(json_file)
 }
 
 .infer_model_type <- function(model_name) {
     if (!dir.exists(model_name)) {
-        json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
-        json_file <- tempfile()
-        download.file(url = json_url, destfile = json_file, quiet = TRUE)
+        json_file <- .download_from_huggingface(model_name)
     } else {
         json_file <- file.path(model_name, "config.json")
     }
     jsonlite::fromJSON(json_file)$model_type
+}
+
+.check_model_type <- function(model_type, model_name) {
+    if (missing(model_name)) {
+        stop("You must provide `model_name`", call. = FALSE)
+    }
+    if (is.null(model_type)) {
+        model_type <- .infer_model_type(model_name)
+    }
+    model_type <- gsub("-", "", tolower(model_type))
+    if (!model_type %in% c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
+                           "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
+                           "squeezebert", "xlm", "xlmroberta", "xlnet")) {
+        stop("Invalid `model_type`.", call. = FALSE)
+    }
+    return(model_type)    
 }
 
 ## Create a factor-like thing that is zero-indexed. It should work with numeric vectors, char vectors and factors.
@@ -31,6 +62,49 @@
 
 .restore_0i <- function(x) {
     attr(x, "levels")[x + 1]
+}
+
+.prepare_y <- function(y, x) {
+    if (is.null(y)) {
+        if (ncol(quanteda::docvars(x)) == 1) {
+            return(as.vector(quanteda::docvars(x)[,1]))
+        } else {
+            stop("Please either specify `y` or set exactly one `docvars` in `x`.", call. = FALSE)
+        }
+    }
+    if (length(y) == 1) {
+        ## It should be a docvars name, but it's better check
+        if (!y %in% colnames(quanteda::docvars(x))) {
+            stop(paste0(y, " is not a docvar."))
+        }
+        return(as.vector(quanteda::docvars(x)[,y]))
+    }
+    return(y)
+}
+
+## stole from quanteda
+## .generate_meta <- function() {
+##     list("package-version" = utils::packageVersion("grafzahl"),
+##          "r-version" = getRversion(),
+##          "system" = Sys.info()[c("sysname", "machine", "user")],
+##          "directory" = getwd(),
+##          "created" = Sys.Date())
+## }
+
+.create_object <- function(call = NA, input_data = NULL, output_dir, model_type, model_name = NA, regression, levels = NULL, manual_seed = NULL) {
+    result <- list(
+        call = call,
+        input_data = input_data,
+        output_dir = output_dir,
+        model_type = model_type,
+        model_name = model_name,
+        regression = regression,
+        levels = levels,
+        manual_seed = manual_seed## ,
+        ## meta = .generare_meta()
+    )
+    class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
+    return(result)
 }
 
 #' Fine tune a pretrained Transformer model for texts
@@ -77,7 +151,7 @@ grafzahl.default <- function(x, y = NULL, model_name = "xlm-roberta-base",
                              regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
                              train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                              manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
-    return(NA)
+    return(invisible(NULL))
 }
 
 #' @rdname grafzahl
@@ -86,35 +160,10 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
                             train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
-    if (!is.integer(manual_seed)) {
-        manual_seed <- as.integer(manual_seed)
-    }
-    if (is.null(model_type)) {
-        model_type <- .infer_model_type(model_name)
-    }
-    model_type <- gsub("-", "", tolower(model_type))
-    if (!model_type %in% c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
-                           "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
-                           "squeezebert", "xlm", "xlmroberta", "xlnet")) {
-        stop("Invalid `model_type`.", call. = FALSE)
-    }
-    if (is.null(y)) {
-        if (ncol(quanteda::docvars(x)) == 1) {
-            y <- as.vector(quanteda::docvars(x)[,1])
-        } else {
-            stop("Please either specify `y` or set exactly one `docvars` in `x`.")
-        }
-    }
     if (quanteda::ndoc(x) <= 1) {
         stop("Too few documents.")
     }
-    if (length(y) == 1) {
-        ## It should be a docvars name, but it's better check
-        if (!y %in% colnames(quanteda::docvars(x))) {
-            stop(paste0(y, " is not a docvar."))
-        }
-        y <- as.vector(quanteda::docvars(x)[,y])
-    }
+    y <- .prepare_y(y, x)
     if (!regression) {
         y <- .make_0i(y)
         num_labels <- length(attr(y, "levels"))
@@ -123,34 +172,34 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
         num_labels <- 1L
         levels <- NULL
     }
-    input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
-    if (Sys.getenv("KILL_SWITCH") != "KILL") {
-        if (!dir.exists(output_dir)) {
-            dir.create(output_dir)
-        }
-        output_dir <- normalizePath(output_dir)
-        best_model_dir <- file.path(output_dir, "best_model")
-        cache_dir <- normalizePath(tempdir())
-        .initialize_conda(.gen_envname(cuda = cuda))
-        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-        py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
-    } else {
-        output_dir <- NA ## no littering if this is a test
+    if (!is.integer(manual_seed)) {
+        manual_seed <- as.integer(manual_seed)
     }
-    result <- list(
-        call = match.call(),
-        input_data = input_data,
-        output_dir = output_dir,
-        model_type = model_type,
-        model_name = model_name,
-        regression = regression,
-        levels = levels,
-        manual_seed = manual_seed
-    )
-    class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
-    if (cleanup & dir.exists(file.path("./", "runs"))) {
+    model_type <- .check_model_type(model_type = model_type, model_name = model_name)
+    input_data <- data.frame("text" = as.vector(x), "label" = as.vector(y))
+    if (Sys.getenv("KILL_SWITCH") == "KILL") {
+        return(NA)
+    }
+    if (!dir.exists(output_dir)) {
+        dir.create(output_dir)
+    }
+    output_dir <- normalizePath(output_dir)
+    best_model_dir <- file.path(output_dir, "best_model")
+    cache_dir <- normalizePath(tempdir())
+    .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = verbose)
+    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+    py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
+    if (cleanup && dir.exists(file.path("./", "runs"))) {
         unlink(file.path("./", "runs"), recursive = TRUE, force = TRUE)
     }
+    result <- .create_object(call = match.call(),
+                             input_data = input_data,
+                             output_dir = output_dir,
+                             model_type = model_type,
+                             model_name = model_name,
+                             regression = regression,
+                             levels = levels,
+                             manual_seed = manual_seed)
     return(result)
 }
 
@@ -200,16 +249,15 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
         }
         newdata <- object$input_data$text
     }
-    if (Sys.getenv("KILL_SWITCH") != "KILL") {
-        .initialize_conda(.gen_envname(cuda = cuda))
-        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-        res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
-        if (return_raw | is.null(object$levels)) {
-            return(res)
-        }
-        return(object$levels[res + 1])
+    if (Sys.getenv("KILL_SWITCH") == "KILL") {
+        return(NA)
     }
-    return(NA)
+    .load_python(.gen_envname(cuda = cuda))
+    res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
+    if (return_raw || is.null(object$levels)) {
+        return(res)
+    }
+    return(object$levels[res + 1])
 }
 
 #' @method print grafzahl
@@ -234,40 +282,28 @@ print.grafzahl <- function(x, ...) {
 #' @return boolean, whether cuda is available.
 #' @export
 detect_cuda <- function() {
-    if (Sys.getenv("KILL_SWITCH") != "KILL") {
-        allenvs <- reticulate::conda_list()$name
-        .initialize_conda(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
-        reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-        return(py_detect_cuda())
-    } else {
+    if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
+    allenvs <- reticulate::conda_list()$name
+    .load_python(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
+    return(py_detect_cuda())
 }
 
 #' Create a grafzahl S3 object from the output_dir
 #'
 #' Create a grafzahl S3 object from the output_dir
 #' @inheritParams grafzahl
-#' 
 #' @export
 hydrate <- function(output_dir, model_type = NULL, regression = FALSE) {
     if (missing(output_dir)) {
         stop("You must provide `output_dir`")
     }
-    if (is.null(model_type)) {
-        model_type <- .infer_model_type(output_dir)
-    }
-    model_type <- gsub("-", "", tolower(model_type))
-    result <- list(
-        call = NA,
-        input_data = NULL,
+    model_type <- .check_model_type(model_type = model_type, model_name = output_dir)
+    results <- .create_object(
         output_dir = output_dir,
         model_type = model_type,
-        model_name = NA,
         regression = regression,
-        levels = NULL,
-        manual_seed = NULL
     )
-    class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
     return(result)
 }
