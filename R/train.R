@@ -9,12 +9,6 @@
     return(invisible(NULL))
 }
 
-## .load_python <- function(envname, verbose = FALSE) {
-##     .initialize_conda(envname = envname, verbose = verbose)
-##     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-##     return(invisible(NULL))
-## }
-
 .download_from_huggingface <- function(model_name, json_file = tempfile()) {
     json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
     tryCatch({
@@ -82,14 +76,14 @@
     return(y)
 }
 
-## stole from quanteda
-## .generate_meta <- function() {
-##     list("package-version" = utils::packageVersion("grafzahl"),
-##          "r-version" = getRversion(),
-##          "system" = Sys.info()[c("sysname", "machine", "user")],
-##          "directory" = getwd(),
-##          "created" = Sys.Date())
-## }
+##stole from quanteda
+.generate_meta <- function() {
+    list("package-version" = utils::packageVersion("grafzahl"),
+         "r-version" = getRversion(),
+         "system" = Sys.info()[c("sysname", "machine", "user")],
+         "directory" = getwd(),
+         "created" = Sys.Date())
+}
 
 .create_object <- function(call = NA, input_data = NULL, output_dir, model_type, model_name = NA, regression, levels = NULL, manual_seed = NULL) {
     result <- list(
@@ -100,8 +94,8 @@
         model_name = model_name,
         regression = regression,
         levels = levels,
-        manual_seed = manual_seed## ,
-        ## meta = .generare_meta()
+        manual_seed = manual_seed,
+        meta = .generate_meta()
     )
     class(result) <- c("grafzahl", "textmodel_transformer", "textmodel", "list")
     return(result)
@@ -286,7 +280,8 @@ detect_cuda <- function() {
         return(NA)
     }
     allenvs <- reticulate::conda_list()$name
-    .load_python(grep("^grafzahl_condaenv", allenvs, value = TRUE)[1])
+    .initialize_conda(envname = grep("^grafzahl_condaenv", allenvs, value = TRUE)[1], verbose = FALSE)
+    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     return(py_detect_cuda())
 }
 
