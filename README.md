@@ -97,12 +97,13 @@ That is it.
 
 Several extended examples are also available.
 
-| Examples                    | file                                           |
-| --------------------------- | ---------------------------------------------- |
-| van Atteveldt et al. (2021) | [paper/vanatteveldt.md](paper/vanatteveldt.md) |
-| Dobbrick et al. (2021)      | [paper/dobbrick.md](paper/dobbrick.md)         |
-| Theocharis et al. (2020)    | [paper/theocharis.md](paper/theocharis.md)     |
-| OffensEval-TR (2020)        | [paper/coltekin.md](paper/coltekin.md)         |
+| Examples                                        | file                                           |
+| ----------------------------------------------- | ---------------------------------------------- |
+| van Atteveldt et al. (2021)                     | [paper/vanatteveldt.md](paper/vanatteveldt.md) |
+| Dobbrick et al. (2021)                          | [paper/dobbrick.md](paper/dobbrick.md)         |
+| Theocharis et al. (2020)                        | [paper/theocharis.md](paper/theocharis.md)     |
+| OffensEval-TR (2020)                            | [paper/coltekin.md](paper/coltekin.md)         |
+| Amharic News Text classification Dataset (2021) | [paper/azime.md](paper/azime.md)               |
 
 ## Some common choices of `model_name`
 

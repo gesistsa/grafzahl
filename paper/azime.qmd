@@ -1,0 +1,76 @@
+---
+title: Azime & Mohammed. (2021)
+format: gfm
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "img/",
+  out.width = "100%"
+  )
+model <- readRDS(here::here("paper/amharic.RDS"))
+model$output_dir <- here::here("paper/amharic")
+```
+
+Amharic is a Semitic language mainly spoken in Ethiopia. After Arabic, Amharic is the second most-spoken Semitic language. Unlike many Semitic languages using the *abjad* (consonant-only) writing system, Amharic is written in a unique alphasyllabary writing system called *Ge'ez*. Syntactically, Amharic is also different from many Germanic languages for its SOV (subject-object-verb) word order [^SOV]. It is in general considered to be a "low resource" language. Only recently, the first news classification dataset called "Amharic News Text classification Dataset" is available [[link](https://arxiv.org/abs/2103.05639)].
+
+Amharic News Text classification Dataset contains 50,706 news articles curated from various Amharic websites. The original paper reports the baseline out-of-sample accuracy of 62.2\% using Naive Bayes. The released data also contains the training-and-test split [^Amharic]. It is a much bigger dataset than the two previous examples (training set: 41,185 articles, test set: 10,287). News articles were annotated into the following categories (originally written in *Ge'ez*, transliterated to Latin characters here): *hāgeri āk’efi zēna* (national news), *mezinanya* (entertainment), *siporiti* (sport), *bīzinesi* (business), *‘alemi āk’efi zēna* (international news), and *poletīka* (politics).
+
+In this example, the AfriBERTa is used as the pretrained model. The AfriBERTa model was trained with a small corpus of 11 African languages. 
+
+# Obtain the data
+
+```{r}
+#| eval: false
+download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/train.csv", destfile = here::here("paper/am_train.csv"))
+
+download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/test.csv", destfile = here::here("paper/am_test.csv"))
+```
+
+# Preserve a model
+
+We can directly use the AfriBERTa model online. We can also preserve a local copy of a pretrained model. As all models on Hugging Face are stored as a Git repository, one can use git to clone the model locally. A cloned model usually takes around 1G of local storage.
+
+
+```bash
+## make sure you have installed git lfs
+## https://git-lfs.github.com/
+git lfs install
+git clone https://huggingface.co/castorini/afriberta_base localafriberta
+```
+
+# Train a classifer using the preserved AfriBERTa model
+
+```{r}
+require(quanteda)
+require(readtext)
+require(grafzahl)
+input <- readtext::readtext(here::here("paper/am_train.csv"), text_field = "article") %>%
+    corpus %>% corpus_subset(category != "")
+```
+
+```{r}
+#| eval: false
+model <- grafzahl(x = input,
+                  y = "category",
+                  model_name = here::here("paper/localafriberta"))
+```
+
+# Evaluate
+
+Accuracy: 84\%
+
+```{r}
+testset_corpus <- readtext::readtext(here::here("paper/am_test.csv"), text_field = "article") %>% corpus %>% corpus_subset(category != "")
+
+preds <- predict(model, newdata = testset_corpus)
+caret::confusionMatrix(table(preds, docvars(testset_corpus, "category")))
+```
+
+
+[^SOV]: Actually, majority of the languages are SOV, while SVO (many Germanic languages) are slightly less common.
+
+[^Amharic]: https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/tree/main
