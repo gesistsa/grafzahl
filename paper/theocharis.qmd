@@ -1,0 +1,120 @@
+---
+title: Theocharis et al. (2020)
+format: gfm
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "img/",
+  out.width = "100%"
+  )
+require(grafzahl)
+
+model <- hydrate(here::here("paper/output"), model_type = "bertweet")
+model <- readRDS(here::here("paper/theo.RDS"))
+```
+
+The following is to analyse the same data used in Theocharis et al. (2020) "The Dynamics of Political Incivility on Twitter" [[doi](https://doi.org/10.1177/2158244020919447)]. The data is available from [Professor Pablo Barberá's Github
+](https://github.com/pablobarbera/incivility-sage-open).
+
+# Data and Lasso regression
+
+The dataset `unciviltweets` is available in this package by agreement of Professor Pablo Barberá. The dataset bundled in this package is a quanteda corpus of 19,982 tweets and a single docvar of incivility, the label to be predicted.
+
+The following attempts to train the [lasso incivility classifier](https://github.com/pablobarbera/incivility-sage-open/blob/master/02-classifier.R) in the original paper.
+
+## Creation of train-test split
+
+Preprocessing
+
+```{r}
+require(quanteda)
+require(grafzahl)
+require(caret)
+require(glmnet)
+require(pROC)
+
+uncivildfm <- unciviltweets %>% tokens(remove_url = TRUE, remove_numbers = TRUE) %>% tokens_wordstem() %>% dfm() %>% dfm_remove(stopwords("english")) %>% dfm_trim(min_docfreq = 2)
+y <- docvars(unciviltweets)[,1]
+seed <- 123
+set.seed(seed)
+training <- sample(seq_along(y), floor(.80 * length(y)))
+test <- (seq_along(y))[seq_along(y) %in% training == FALSE]
+```
+
+A "downsample" process was introduced in the original paper.
+
+```{r}
+small_class <- which.min(table(y[training])) - 1
+n_small_class <- sum(y[training] == small_class)
+downsample <- sample(training[y[training] != small_class], n_small_class, replace = TRUE)
+training <- c(training[y[training] == small_class], downsample)
+original_training <- setdiff(seq_along(y), test) ## retain a copy
+```
+
+## Training a lasso classifier
+
+Confusion matrix
+
+```{r}
+X <- as(uncivildfm, "dgCMatrix")
+
+lasso <- glmnet::cv.glmnet(x = X[training,], y = y[training], alpha = 1, nfold = 5, family = "binomial")
+```
+
+### Evaluation
+
+```{r}
+preds <- predict(lasso, uncivildfm[test,], type="response")
+caret::confusionMatrix(table(y[test], ifelse(preds > .5, 1, 0)), mode = "prec_recall")
+```
+
+ROC
+
+```{r}
+pROC::auc(as.vector((y[test])*1), as.vector((preds)*1))
+```
+
+## Training a BERTweet classifier
+
+In this example, a BERTweet-based classifier (Nguyen et al. 2020) is trained. Please note that the following doesn't involve the preprocessing and downsampling procedures.
+
+```{r}
+#| eval: false
+set.seed(721)
+model <- grafzahl(unciviltweets[original_training], model_type = "bertweet", model_name = "vinai/bertweet-base", output_dir = here::here("paper/theocharis"))
+```
+
+### Evaluation
+
+```{r}
+pred_bert <- predict(model, unciviltweets[test])
+pred_bert2 <- predict(model, unciviltweets[test], return_raw = TRUE)
+
+caret::confusionMatrix(table(y[test], pred_bert), mode = "prec_recall")
+```
+
+### ROC
+
+```{r}
+pROC::auc(as.vector((y[test])*1), pred_bert2[,1])
+```
+
+### Plotting the two curves
+
+```{r}
+#| label: theocharis-roc
+require(ROCR)
+performance_bert <- performance(prediction(pred_bert2[,2], y[test]), "tpr", "fpr")
+performance_origin <- performance(prediction(preds, y[test]), "tpr", "fpr")
+plot(performance_origin)
+abline(a = 0, b = 1, col = "grey")
+plot(performance_bert, add = TRUE, col = "red")
+```
+
+## References
+
+1. Nguyen, D. Q., Vu, T., & Nguyen, A. T. (2020). BERTweet: A pre-trained language model for English Tweets. arXiv preprint arXiv:2005.10200.
