@@ -102,6 +102,7 @@ Several extended examples are also available.
 | van Atteveldt et al. (2021) | [paper/vanatteveldt.md](paper/vanatteveldt.md) |
 | Dobbrick et al. (2021)      | [paper/dobbrick.md](paper/dobbrick.md)         |
 | Theocharis et al. (2020)    | [paper/theocharis.md](paper/theocharis.md)     |
+| OffensEval-TR (2020)        | [paper/coltekin.md](paper/coltekin.md)         |
 
 ## Some common choices of `model_name`
 
