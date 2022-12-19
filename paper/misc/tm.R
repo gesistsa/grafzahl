@@ -35,3 +35,4 @@ topic_summary <- analytics@label_summary
 alg_summary <- analytics@algorithm_summary
 
 mean(alg_summary$SVM_FSCORE, na.rm = TRUE)
+
