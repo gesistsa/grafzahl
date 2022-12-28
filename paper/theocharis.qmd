@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   )
 require(grafzahl)
 
-model <- hydrate(here::here("paper/output"), model_type = "bertweet")
+## model <- hydrate(here::here("paper/theocharis"), model_type = "bertweet")
 model <- readRDS(here::here("paper/theo.RDS"))
 ```
 

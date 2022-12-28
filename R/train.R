@@ -1,14 +1,3 @@
-.initialize_conda <- function(envname, verbose = FALSE) {
-    if (is.null(getOption('python_init'))) {
-        reticulate::use_miniconda(envname, required = TRUE)
-        options('python_init' = TRUE)
-        if (verbose) {
-            print(paste0("Conda environment ", envname, " is initialized.\n"))
-        }
-    }
-    return(invisible(NULL))
-}
-
 .download_from_huggingface <- function(model_name, json_file = tempfile()) {
     json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
     tryCatch({
@@ -246,7 +235,8 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
     if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
-    .load_python(.gen_envname(cuda = cuda))
+    .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = FALSE)
+    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
     if (return_raw || is.null(object$levels)) {
         return(res)
@@ -268,21 +258,6 @@ print.grafzahl <- function(x, ...) {
         "model_name:", x$model_name, ";",
         n_training, "training documents; ",
         "\n", sep = " ")
-}
-
-#' Detect cuda
-#'
-#' This function detects whether cuda is available. If `setup_grafzahl` was executed with `cuda` being `FALSE`, this function will return `FALSE`. Even if `setup_grafzahl` was executed with `cuda` being `TRUE` but with any factor that can't enable cuda (e.g. no Nvidia GPU, the environment was incorrectly created), this function will also return `FALSE`.
-#' @return boolean, whether cuda is available.
-#' @export
-detect_cuda <- function() {
-    if (Sys.getenv("KILL_SWITCH") == "KILL") {
-        return(NA)
-    }
-    allenvs <- reticulate::conda_list()$name
-    .initialize_conda(envname = grep("^grafzahl_condaenv", allenvs, value = TRUE)[1], verbose = FALSE)
-    reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    return(py_detect_cuda())
 }
 
 #' Create a grafzahl S3 object from the output_dir
