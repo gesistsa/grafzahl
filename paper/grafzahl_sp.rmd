@@ -30,7 +30,7 @@ tablelist         : no
 figsintext        : yes
 footnotelist      : no
 linenumbers       : no
-mask              : yes
+mask              : no
 draft             : no
 
 documentclass     : "apa6"

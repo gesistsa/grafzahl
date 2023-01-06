@@ -21,6 +21,11 @@ If you don’t know what I am talking about, don’t worry, this package is
 gracious. You don’t need to know a lot about Transformers to use this
 package. See the examples below.
 
+Please cite this software as:
+
+Chan, C., (2023). [grafzahl: fine-tuning Transformers for text data from
+within R](paper/grafzahl_sp.pdf). (under review)
+
 ## Installation
 
 You can install the development version of grafzahl like so:
