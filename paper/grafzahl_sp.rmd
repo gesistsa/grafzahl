@@ -52,9 +52,9 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 ## Put the R back in Transformers
 
-The purpose of this R package, `grafzahl`, is to provide the missing link between the `quanteda` ecosystem and modern Transformers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. Therefore, there is no need to switch back and forth between programming languages. This package provides the function `grazahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. [^f]
+The purpose of this R package, `grafzahl`, is to provide the missing link between the `quanteda` ecosystem and modern Transformers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. This package provides the function `grafzahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. [^f]
 
-[^f]: This package uses reasonable default settings which suit what communication researchers would like to achieve with these pretrained Transformers models. But the package also provides the freedom for communication researchers to finely adjust the parameters for their specific applications. However, the reanalysis of several examples in communication suggests that even the default settings can generate great improvement over the performance as reported in the original papers. Also, there is almost no need to conduct the cumbersome proprocessing and feature engineering steps, which all examples originally required.
+[^f]: This package uses reasonable default settings which suit what communication researchers would like to achieve with these models. But the package also provides the freedom for communication researchers to finely adjust the parameters for their specific applications. However, the reanalysis of several examples in communication suggests that even the default settings can generate great improvement over the performance as reported in the original papers. Also, there is almost no need to conduct the cumbersome proprocessing and feature engineering steps, which all examples originally required.
 
 # Monolingual classification example
 
@@ -83,7 +83,7 @@ setup_grafzahl(cuda = TRUE) # set to FALSE otherwise
 
 ### Step 1: Get information of the pretrained Transformer
 
-The first step of training a Transformer-based model is to find a suitable pretrained Transformer model on Hugging Face [^hugg], which would work for the data. As the data are in Dutch, a pretrained Dutch Transformer model such as BERTje should work [@de2019bertje, available from https://huggingface.co/GroNLP/bert-base-dutch-cased]. The model name of this model is `GroNLP/bert-base-dutch-cased`. It is also important to note the citation information to properly cite the pretrained Transformer model.
+The first step of training a Transformer-based model is to find a suitable pretrained Transformer model on Hugging Face [^hugg], which would work for the data. As the data are in Dutch, the pretrained Dutch Transformer model BERTje should work [@de2019bertje, available from https://huggingface.co/GroNLP/bert-base-dutch-cased]. The model name of BERTje is `GroNLP/bert-base-dutch-cased`. It is also important to note the citation information to properly cite the pretrained Transformer model.
 
 [^hugg]: Hugging Face (https://huggingface.co) is an online repository of pretrained machine learning models. 
 
@@ -91,7 +91,7 @@ The first step of training a Transformer-based model is to find a suitable pretr
 
 The second step is to read the data as a corpus. The easiest way to do that is to use the R package `readtext` [@readtext]. [^CORPUS]
 
-[^CORPUS]: This step is not absolutely needed. The package can also work with character vectors. The `corpus` data structure, which is a better representation of character vector, makes the workflow easier. Also, `readtext` can read the data directly from the url: https://raw.githubusercontent.com/vanatteveldt/ecosent/master/data/intermediate/sentences_ml.csv
+[^CORPUS]: This step is not absolutely needed. The package can also work with character vectors. The `corpus` data structure is a better representation of character vector. Also, `readtext` can read the data directly from the url: https://raw.githubusercontent.com/vanatteveldt/ecosent/master/data/intermediate/sentences_ml.csv
 
 ```r
 require(readtext)
@@ -136,10 +136,11 @@ predicted_sentiment <- predict(model, test_corpus)
 With the predicted sentiment and the ground truth, there are many ways to evaluate the performance of the fine-tuned model. The simplest way is to construct a confusion matrix using the standard `table()` function.
 
 ```r
-cm <- table(predicted_sentiment, ground_truth = docvars(test_corpus, "value"))
+cm <- table(predicted_sentiment,
+            ground_truth = docvars(test_corpus, "value"))
 ```
 
-The R package `caret` can also be used to calculate standard performance metrics such as Precision, Recall, and F1 [^caret].
+The R package `caret` [@kuhn:2008:BPM] can also be used to calculate standard performance metrics such as Precision, Recall, and F1 [^caret].
 
 ```r
 require(caret)
