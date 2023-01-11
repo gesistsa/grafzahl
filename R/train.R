@@ -275,5 +275,5 @@ hydrate <- function(output_dir, model_type = NULL, regression = FALSE) {
         model_type = model_type,
         regression = regression,
     )
-    return(result)
+    return(results)
 }

@@ -33,8 +33,8 @@ get_amharic_data <- function() {
                   destfile = file.path(current_tempdir, "train.csv"))
     download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/test.csv",
                   destfile = file.path(current_tempdir, "test.csv"))
-    training <- read.csv(file.path(current_tempdir, "train.csv"))
-    test <- read.csv(file.path(current_tempdir, "test.csv"))
+    training <- utils::read.csv(file.path(current_tempdir, "train.csv"))
+    test <- utils::read.csv(file.path(current_tempdir, "test.csv"))
     training <- training[training$category != "",]
     test <- test[test$category != "",]
     training_corpus <- quanteda::corpus(training$article)
