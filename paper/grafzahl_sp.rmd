@@ -20,9 +20,9 @@ abstract: |
   This paper introduces `grafzahl`, an R package for fine-tuning Transformers for text data from within R. The package is used in this paper to reproduce the analyses in communication papers or, of non-Germanic benchmark datasets. Very significant improvement in model accuacy over traditional machine learning approach such as Convoluted Neural Network is observed.
   
 keywords          : "machine learning, transformers, R, python, automated content analysis"
-wordcount         : "1951"
+wordcount         : "2018"
 
-bibliography      : ["/home/chainsawriot/dev/dotfiles/bib.bib"]
+bibliography      : "grafzahl_sp.bib"
 
 floatsintext      : yes
 figurelist        : no
