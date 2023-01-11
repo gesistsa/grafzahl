@@ -17,3 +17,8 @@ usethis::use_data(unciviltweets)
 set.seed(123)
 smallunciviltweets <- quanteda::corpus_sample(unciviltweets, 200)
 usethis::use_data(smallunciviltweets)
+
+download.file(url <- "https://raw.githubusercontent.com/vanatteveldt/ecosent/master/data/intermediate/sentences_ml.csv", "rawdata/sentences_ml.csv")
+
+ecosent <- read.csv("rawdata/sentences_ml.csv")[c("id", "headline", "value", "gold")]
+usethis::use_data(ecosent)

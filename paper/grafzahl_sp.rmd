@@ -14,10 +14,10 @@ affiliation:
     institution   : "GESIS - Leibniz-Institut für Sozialwissenschaften, Germany"
     
 authornote: |
-  Source code and data are available at https://github.com/chainsawriot/grafzahl. I would like to thank Jarvis Labs for providing discounted GPU cloud service for the development of this package.
+  Source code and data are available at https://github.com/chainsawriot/grafzahl. I would like to thank 1) Jarvis Labs for providing discounted GPU cloud service for the development of this package; 2) Pablo Barberá (University of Southern California) and Wouter van Atteveldt (VU Amsterdam) for allowing me to include their datasets in this package.
 
 abstract: |
-  This paper introduces `grafzahl`, an R package for fine-tuning Transformers for text data from within R. The package combines the ease of use of the `quanteda` R ecosystem and the state-of-the-art `Transformers` Python library. The package is used in this paper to reproduce the analyses in communication papers or, of non-Germanic benchmark datasets. Very significant improvement in model accuacy over traditional machine learning approach such as Convoluted Neural Network is observed.
+  This paper introduces `grafzahl`, an R package for fine-tuning Transformers for text data from within R. The package is used in this paper to reproduce the analyses in communication papers or, of non-Germanic benchmark datasets. Very significant improvement in model accuacy over traditional machine learning approach such as Convoluted Neural Network is observed.
   
 keywords          : "machine learning, transformers, R, python, automated content analysis"
 wordcount         : "1951"
@@ -52,19 +52,21 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 ## Put the R back in Transformers
 
-The purpose of this R package, `grafzahl`, is to provide the missing link between the `quanteda` ecosystem and modern Transformers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. This package provides the function `grafzahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. [^f]
+The purpose of this R package, `grafzahl`, is to provide the missing link between R and modern Transformers language models. Under the hood, the training part is based on the Python packages `transformers` [@wolf-etal-2020-transformers] and `simpletransformers` [@simpletransformers]. The integration based on `reticulate` [@reticulate] is seamless. With this seamless integration provided, communication researchers can produce the most advanced supervised learning models entirely from within R. This package provides the function `grafzahl()`, which emulates the behaviors of `quanteda.textmodels` [@quantedatextmodels]. [^f]
 
 [^f]: This package uses reasonable default settings which suit what communication researchers would like to achieve with these models. But the package also provides the freedom for communication researchers to finely adjust the parameters for their specific applications. However, the reanalysis of several examples in communication suggests that even the default settings can generate great improvement over the performance as reported in the original papers. Also, there is almost no need to conduct the cumbersome proprocessing and feature engineering steps, which all examples originally required.
+
+Two examples [@atteveldt:2021:VSA;@azime2021amharic] are presented here. Additional examples [@theocharis:2020:DPI; @dobbrick:2021:ETI; @ccoltekin2020corpus] are available in the Github repository of the package (https://github.com/chainsawriot/grafzahl).
 
 # Monolingual classification example
 
 @atteveldt:2021:VSA compare various methods to analyze the tone of Dutch economic news' headlines. Headlines were coded into three categories: negative (-1), neutral (0), and positive (+1).
 
-In the original paper, @atteveldt:2021:VSA show that the best method for predicting expert coding, other than coding by student helpers, is convoluted neural network (CNN) with Dutch word embeddings trained on Dutch news. The out-of-sample F1 of .63, .66, and .56 were reported for the three categories. As the data (including the training-and-test split) are publicly available [^wouter], I can provide a head-to-head comparison between the reported CNN and the Transformer-based model trained with the current package.
+In the original paper, @atteveldt:2021:VSA show that the best method for predicting expert coding, other than coding by student helpers, is convoluted neural network (CNN) with Dutch word embeddings trained on Dutch news. The out-of-sample F1 of .63, .66, and .56 were reported for the three categories. As the data (including the training-and-test split) are publicly available [^wouter] and included in this package (as `ecosent`), I can provide a head-to-head comparison between the reported CNN and the Transformer-based model trained with `grafzahl`.
 
 [^wouter]: https://github.com/vanatteveldt/ecosent/
 
-In the released data (`sentences_ml.csv`), there are three important columns:
+There are three important columns in the `ecosent` data frame:
 
 1. `headline`: the actual text data
 2. `value`: the sentiment
@@ -74,12 +76,17 @@ In the released data (`sentences_ml.csv`), there are three important columns:
 
 ### Step 0: Setup `grafzahl`
 
-This step only needs to be done once. A miniconda environment needs to be setup. If there is a GPU capable of performing CUDA, run:
+This step only needs to be done once. A miniconda environment needs to be setup. It is in general not recommended to use this package without a CUDA-compatible GPU. Without a CUDA-compatible GPU, the fine-tuning processes below might take days, if not weeks. 
+
+If there is a GPU capable of performing CUDA, run:
 
 ```r
 require(grafzahl)
 setup_grafzahl(cuda = TRUE) # set to FALSE otherwise
+detect_cuda()
 ```
+
+If the automatic setup failed, one can also set up the miniconda environment manually to diagnose what went wrong. The complete instructions are available here: https://github.com/chainsawriot/grafzahl/wiki/setup_grafzahl 
 
 ### Step 1: Get information of the pretrained Transformer
 
@@ -89,16 +96,14 @@ The first step of training a Transformer-based model is to find a suitable pretr
 
 ### Step 2: Create the corpus
 
-The second step is to read the data as a corpus. The easiest way to do that is to use the R package `readtext` [@readtext]. [^CORPUS]
+The second step is to read the data as a corpus. [^CORPUS]
 
-[^CORPUS]: This step is not absolutely needed. The package can also work with character vectors. The `corpus` data structure is a better representation of character vector. Also, `readtext` can read the data directly from the url: https://raw.githubusercontent.com/vanatteveldt/ecosent/master/data/intermediate/sentences_ml.csv
+[^CORPUS]: This step is not absolutely needed. The package can also work with character vectors. The `corpus` data structure is a better representation of character vector.
 
 ```r
 require(readtext)
 require(quanteda)
-url <- "https://raw.githubusercontent.com/vanatteveldt/ecosent/master/data/intermediate/sentences_ml.csv"
-input <- readtext(url, text_field = "headline") %>%
-    corpus
+input <- corpus(ecosent, text_field = "headline")
 ```
 
 We can manipulate the corpus object using the functions provided by `quanteda`. For example, one can subset the training set using the function `corpus_subset()`.
@@ -120,7 +125,7 @@ model <- grafzahl(x = training_corpus,
 
 In general, it is better to specify `output_dir` (where to put the saved model object). By default, it will be `output` in the current working directory. The R function `set.seed()` can also be used to preserve the random seed for reproducibility.
 
-On a regular off-the-shelf gaming laptop with a GeForce RTX 3050 Ti GPU and 4G of GPU ram, the process took around 20 minutes. It is in general not recommended to train this without a CUDA-compatible GPU. In those cases, the process might take days, if not weeks.
+On a regular off-the-shelf gaming laptop with a GeForce RTX 3050 Ti GPU and 4G of GPU ram, the process took around 20 minutes.
 
 ### Step 4: Make prediction
 
@@ -147,14 +152,17 @@ require(caret)
 confusionMatrix(cm, mode = "prec_recall")
 ```
 
-The out-of-sample F1 measures of the fine-tuned model are .76, .67, and .72 (vs reported .63, .66, and .56). There is great improvement over the CNN model reported by @atteveldt:2021:VSA, although the prediction accuracy for the neutral category is just on par. @atteveldt:2021:VSA also provide the learning curve of CNN and Support Vector Machine (SVM). A learning curve plots the out-of-sample prediction performance as a function of number of training examples. I repeat the analysis in a similar manner to @atteveldt:2021:VSA and plot the learning curve of Transformer-based model trained using the default workflow of `grafzahl`. Figure \@ref(fig:fig2) show the fine-tuned Transformer model's learning curve alongside CNN's and SVM's. The fune-tuned model has much better performance than CNN and SVM even with only 500 training examples. Unlike CNN and SVM, the gain in performance appears to plateau after 2500. It points to the fact that one does not need to have a lot of training data to fine-tune a Transformer model. 
+The out-of-sample F1 measures of the fine-tuned model are .76, .67, and .72 (vs reported .63, .66, and .56). There is great improvement over the CNN model reported by @atteveldt:2021:VSA, although the prediction accuracy for the neutral category is just on par. @atteveldt:2021:VSA also provide the learning curve of CNN and Support Vector Machine (SVM). A learning curve plots the out-of-sample prediction performance as a function of number of training examples. I repeat the analysis in a similar manner to @atteveldt:2021:VSA and plot the learning curve of Transformer-based model trained using the default workflow of `grafzahl`.
+
+Figure \@ref(fig:fig2) show the fine-tuned Transformer model's learning curve alongside CNN's and SVM's [^learningcode]. The fune-tuned model has much better performance than CNN and SVM even with only 500 training examples. Unlike CNN and SVM, the gain in performance appears to plateau after 2500. It points to the fact that one does not need to have a lot of training data to fine-tune a Transformer model. 
 
 ```{r fig2, fig.cap = "Learning curve of machine learning algorithms"}
-readRDS(here::here("paper/learning.RDS"))
+readRDS(here::here("learning.RDS"))
 ```
 
 [^caret]: The function `confusionMatrix()` can accept the predicted values and ground truth directly, without using `table()` first. But the predicted values and ground truth must be `factor`: `confusionMatrix(as.factor(predicted_sentiment), as.factor(docvars(test_corpus, "value")), mode = "prec_recall")`. 
 
+[^learningcode]: The R code for generating the learning curves is available in the official repository: https://github.com/chainsawriot/grafzahl
 
 ### Step 5: Explain the prediction
 
@@ -180,23 +188,24 @@ knitr::include_graphics("fig1.png")
 
 Figure \@ref(fig:fig1) shows that for the sentence *"Dijsselbloem pessimistisch over snelle stappen Grieken"* (classified as negative), the tokens *pessimistisch* and *stappen* are making the prediction towards the classified position (negative). But the token *Dijsselbloem* is making it away.
 
-
 # Non-Germanic example: Amharic
 
 I want to emphasize that `grafzahl` is not just another package focusing only on English, or Germanic languages such as Dutch. @baden:2021:TGC criticize this tendency. 
 
 Amharic is a Semitic language mainly spoken in Ethiopia and is in general considered to be a "low resource" language. [@joshi2020state] Only recently, the first news classification dataset called "Amharic News Text classification Dataset" is available [@azime2021amharic]. The dataset contains 50,706 news articles curated from various Amharic websites. The original paper reports the baseline out-of-sample accuracy of 62.2\% using Naive Bayes. The released data also contains the training-and-test split [^Amharic]. In this example, the AfriBERTa is used as the pretrained model [@ogueji2021small]. The AfriBERTa model was trained with a small corpus of 11 African languages. Similar to the previous example, the default settings of `grafzahl` are used.
 
-[^Amharic]: https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/tree/main The direct url is https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/train.csv
+[^Amharic]: https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset
 
 ```r
-url <- "https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/train.csv"
-input <- readtext(url, text_field = "article") %>%
-    corpus %>% corpus_subset(category != "")
-
-model <- grafzahl(x = input,
+input <- get_amharic_data()
+model <- grafzahl(x = input$training,
                   y = "category",
                   model_name = "castorini/afriberta_base")
+
+## Calculate the out-of-sample accuracy
+
+preds <- predict(model, newdata = input$test)
+caret::confusionMatrix(table(preds, docvars(input$test, "category")))
 ```
 
 ## Results
@@ -205,7 +214,7 @@ The final out-of-sample accuracy is 84.18\%, a solid improvement from the baseli
 
 # Conclusion
 
-This paper presents the R packages `grafzahl` and demonstrates its applicability to communication research by replicating the supervised machine learning part of published communication research. The Github repository of `grafzahl` provides additional examples.
+This paper presents the R packages `grafzahl` and demonstrates its applicability to communication research by replicating the supervised machine learning part of published communication research.
 
 # References
 
