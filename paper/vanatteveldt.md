@@ -147,12 +147,14 @@ tibble::tibble(n, acc, method = "Transformer (BERTje)", perc = 0) %>% group_by(m
     summarise(acc = mean(acc)) %>% ungroup %>% add_column(perc = 1, .before = "n") %>%
     bind_rows(curve) -> curve
 
-ggplot(curve, aes(x=n, y=acc, group=method, lty=method)) + geom_line() + 
-  scale_linetype(name="Method") +
-  xlab("Number of training examples") + ylab("Accuracy") + 
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1))+
-  ggthemes::theme_clean() + theme(legend.position = "top", legend.background = element_blank(),
-                                  plot.background  = element_blank())
+learning <- ggplot(curve, aes(x=n, y=acc, group=method, lty=method)) + geom_line() + 
+    scale_linetype(name="Method") +
+    xlab("Number of training examples") + ylab("Accuracy") + 
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1))+
+    ggthemes::theme_clean() + theme(legend.position = "top", legend.background = element_blank(),
+                                    plot.background  = element_blank())
+saveRDS(learning, here::here("learning.RDS"))
+learning
 ```
 
 <figure>
