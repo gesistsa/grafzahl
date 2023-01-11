@@ -28,14 +28,14 @@ unzip(temp, exdir = here::here("paper"))
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 3.2.2
+#> Package version: 3.2.4
 #> Unicode version: 13.0
 #> ICU version: 66.1
 #> Parallel computing: 16 of 16 threads used.
 #> See https://quanteda.io for tutorials and examples.
 require(readtext)
 #> Loading required package: readtext
-input <- readtext::readtext(here::here("paper/offenseval2020-turkish/offenseval-tr-training-v1/offenseval-tr-training-v1.tsv"), text_field = "tweet", quote = "") %>% corpus
+input <- readtext::readtext(here::here("offenseval2020-turkish/offenseval-tr-training-v1/offenseval-tr-training-v1.tsv"), text_field = "tweet", quote = "") %>% corpus
 ```
 
 ## Train a classifer
@@ -49,16 +49,16 @@ model <- grafzahl(x = input,
                   y = "subtask_a",
                   model_type = "bert",
                   model_name = "dbmdz/bert-base-turkish-cased",
-                  output_dir = here::here("paper/turkmodel"))
-saveRDS(model, here::here("paper/turkmodel.RDS"))
+                  output_dir = here::here("turkmodel"))
+saveRDS(model, here::here("turkmodel.RDS"))
 ```
 
 ## Create the test corpus
 
 ``` r
-test <- rio::import(here::here("paper/offenseval2020-turkish/offenseval-tr-testset-v1/offenseval-tr-testset-v1.tsv"), quote = "")
+test <- rio::import(here::here("offenseval2020-turkish/offenseval-tr-testset-v1/offenseval-tr-testset-v1.tsv"), quote = "")
 
-labels <- rio::import(here::here("paper/offenseval2020-turkish/offenseval-tr-testset-v1/offenseval-tr-labela-v1.tsv"), quote = "")
+labels <- rio::import(here::here("offenseval2020-turkish/offenseval-tr-testset-v1/offenseval-tr-labela-v1.tsv"), quote = "")
 
 colnames(labels)[1] <- "id"
 colnames(labels)[2] <- "subtask_a"

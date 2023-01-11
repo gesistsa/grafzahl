@@ -28,9 +28,9 @@ AfriBERTa model was trained with a small corpus of 11 African languages.
 # Obtain the data
 
 ``` r
-download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/train.csv", destfile = here::here("paper/am_train.csv"))
+download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/train.csv", destfile = here::here("am_train.csv"))
 
-download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/test.csv", destfile = here::here("paper/am_test.csv"))
+download.file("https://huggingface.co/datasets/israel/Amharic-News-Text-classification-Dataset/resolve/main/test.csv", destfile = here::here("am_test.csv"))
 ```
 
 # Preserve a model
@@ -52,7 +52,7 @@ git clone https://huggingface.co/castorini/afriberta_base localafriberta
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 3.2.2
+#> Package version: 3.2.4
 #> Unicode version: 13.0
 #> ICU version: 66.1
 #> Parallel computing: 16 of 16 threads used.
@@ -61,14 +61,14 @@ require(readtext)
 #> Loading required package: readtext
 require(grafzahl)
 #> Loading required package: grafzahl
-input <- readtext::readtext(here::here("paper/am_train.csv"), text_field = "article") %>%
+input <- readtext::readtext(here::here("am_train.csv"), text_field = "article") %>%
     corpus %>% corpus_subset(category != "")
 ```
 
 ``` r
 model <- grafzahl(x = input,
                   y = "category",
-                  model_name = here::here("paper/localafriberta"))
+                  model_name = here::here("localafriberta"))
 ```
 
 # Evaluate
@@ -76,7 +76,7 @@ model <- grafzahl(x = input,
 Accuracy: 84%
 
 ``` r
-testset_corpus <- readtext::readtext(here::here("paper/am_test.csv"), text_field = "article") %>% corpus %>% corpus_subset(category != "")
+testset_corpus <- readtext::readtext(here::here("am_test.csv"), text_field = "article") %>% corpus %>% corpus_subset(category != "")
 
 preds <- predict(model, newdata = testset_corpus)
 caret::confusionMatrix(table(preds, docvars(testset_corpus, "category")))

@@ -25,7 +25,7 @@ Preprocessing
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 3.2.2
+#> Package version: 3.2.4
 #> Unicode version: 13.0
 #> ICU version: 66.1
 #> Parallel computing: 16 of 16 threads used.
@@ -38,7 +38,7 @@ require(caret)
 require(glmnet)
 #> Loading required package: glmnet
 #> Loading required package: Matrix
-#> Loaded glmnet 4.1-4
+#> Loaded glmnet 4.1-6
 require(pROC)
 #> Loading required package: pROC
 #> Type 'citation("pROC")' for a citation.
@@ -126,7 +126,7 @@ preprocessing and downsampling procedures.
 
 ``` r
 set.seed(721)
-model <- grafzahl(unciviltweets[original_training], model_type = "bertweet", model_name = "vinai/bertweet-base", output_dir = here::here("paper/theocharis"))
+model <- grafzahl(unciviltweets[original_training], model_type = "bertweet", model_name = "vinai/bertweet-base", output_dir = here::here("theocharis"))
 ```
 
 ### Evaluation

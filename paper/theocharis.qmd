@@ -13,8 +13,8 @@ knitr::opts_chunk$set(
   )
 require(grafzahl)
 
-## model <- hydrate(here::here("paper/theocharis"), model_type = "bertweet")
-model <- readRDS(here::here("paper/theo.RDS"))
+## model <- hydrate(here::here("theocharis"), model_type = "bertweet")
+model <- readRDS(here::here("theo.RDS"))
 ```
 
 The following is to analyse the same data used in Theocharis et al. (2020) "The Dynamics of Political Incivility on Twitter" [[doi](https://doi.org/10.1177/2158244020919447)]. The data is available from [Professor Pablo Barberá's Github
@@ -85,7 +85,7 @@ In this example, a BERTweet-based classifier (Nguyen et al. 2020) is trained. Pl
 ```{r}
 #| eval: false
 set.seed(721)
-model <- grafzahl(unciviltweets[original_training], model_type = "bertweet", model_name = "vinai/bertweet-base", output_dir = here::here("paper/theocharis"))
+model <- grafzahl(unciviltweets[original_training], model_type = "bertweet", model_name = "vinai/bertweet-base", output_dir = here::here("theocharis"))
 ```
 
 ### Evaluation

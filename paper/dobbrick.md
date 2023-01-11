@@ -44,8 +44,8 @@ unzip(file.path(temp, "glassbox.zip"), files = c("glassbox/data/goldstandard_ic_
 file.exists(file.path(temp, "glassbox/data/goldstandard_ic_de.csv"))
 file.exists(file.path(temp, "glassbox/data/goldstandard_ic_en.csv"))
 
-file.copy(file.path(temp, "glassbox/data/goldstandard_ic_de.csv"), here::here("paper/goldstandard_ic_de.csv"))
-file.copy(file.path(temp, "glassbox/data/goldstandard_ic_en.csv"), here::here("paper/goldstandard_ic_en.csv"))
+file.copy(file.path(temp, "glassbox/data/goldstandard_ic_de.csv"), here::here("goldstandard_ic_de.csv"))
+file.copy(file.path(temp, "glassbox/data/goldstandard_ic_en.csv"), here::here("goldstandard_ic_en.csv"))
 ```
 
 # Read the data
@@ -53,7 +53,7 @@ file.copy(file.path(temp, "glassbox/data/goldstandard_ic_en.csv"), here::here("p
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 3.2.2
+#> Package version: 3.2.4
 #> Unicode version: 13.0
 #> ICU version: 66.1
 #> Parallel computing: 16 of 16 threads used.
@@ -80,12 +80,12 @@ require(dplyr)
 
 ## The csv file is actually the "European" variant; can't use readtext
 ## https://github.com/quanteda/readtext/issues/170
-en_data <- rio::import(here::here("paper/goldstandard_ic_en.csv")) %>% tibble::as_tibble() %>% filter(!is_redacted & main_language == "en" & WC > 0)
+en_data <- rio::import(here::here("goldstandard_ic_en.csv")) %>% tibble::as_tibble() %>% filter(!is_redacted & main_language == "en" & WC > 0)
 en_data %>% pull(post) %>% corpus -> en_corpus
 docvars(en_corpus, "icom") <- as.numeric(en_data$ic_ordinal)
 docnames(en_corpus) <- paste0("en", seq_along(en_corpus))
 
-de_data <- rio::import(here::here("paper/goldstandard_ic_de.csv")) %>% tibble::as_tibble() %>% filter(!is_redacted & main_language == "de" & WC > 0)
+de_data <- rio::import(here::here("goldstandard_ic_de.csv")) %>% tibble::as_tibble() %>% filter(!is_redacted & main_language == "de" & WC > 0)
 de_data %>% pull(post) %>% corpus -> de_corpus
 docvars(de_corpus, "icom") <- as.numeric(de_data$ic_ordinal)
 
@@ -120,7 +120,7 @@ rmse <- function(x, y) {
 fold <- function(i, en_corpus, de_corpus, en_ranid, de_ranid) {
     mod <- grafzahl(en_corpus[en_ranid != i] + de_corpus[de_ranid != i],
                     model_name = "distilbert-base-multilingual-cased",
-                    output_dir = here::here(paste0("paper/dobbrick", i)),
+                    output_dir = here::here(paste0("dobbrick", i)),
                     regression = TRUE)
     pred_en <- predict(mod, en_corpus[en_ranid == i])
     pred_de <- predict(mod, de_corpus[de_ranid == i])

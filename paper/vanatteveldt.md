@@ -13,7 +13,7 @@ repo](https://github.com/vanatteveldt/ecosent).
 ``` r
 require(quanteda)
 #> Loading required package: quanteda
-#> Package version: 3.2.2
+#> Package version: 3.2.4
 #> Unicode version: 13.0
 #> ICU version: 66.1
 #> Parallel computing: 16 of 16 threads used.
@@ -34,14 +34,14 @@ In this analysis, [the Dutch language BERT
 
 ``` r
 model <- grafzahl(x = training_corpus, y = "value", model_name = "GroNLP/bert-base-dutch-cased",
-                  output_dir = here::here("paper/va_output"), manual_seed = 721)
-saveRDS(model, here::here("paper/va_model.RDS"))
+                  output_dir = here::here("va_output"), manual_seed = 721)
+saveRDS(model, here::here("va_model.RDS"))
 ```
 
 # Make prediction for the test set
 
 ``` r
-model <- readRDS(here::here("paper/va_model.RDS"))
+model <- readRDS(here::here("va_model.RDS"))
 test_corpus<- corpus_subset(input, gold)
 predicted_sentiment <- predict(model, newdata = test_corpus)
 ```
@@ -117,11 +117,11 @@ test_corpus<- corpus_subset(input, gold)
 set.seed(721831)
 for (i in seq_along(n)) {
     current_corpus <- corpus_sample(training_corpus, n[i])
-    model <- grafzahl(x = current_corpus, y = "value", model_name = "GroNLP/bert-base-dutch-cased", output_dir = here::here("paper/va_size"))
+    model <- grafzahl(x = current_corpus, y = "value", model_name = "GroNLP/bert-base-dutch-cased", output_dir = here::here("va_size"))
         predicted_sentiment <- predict(model, newdata = test_corpus)
     res[[i]] <- caret::confusionMatrix(table(predicted_sentiment, gt = docvars(test_corpus, "value")), mode = "prec_recall")
 }
-saveRDS(res, here::here("paper/va_learning.RDS"))
+saveRDS(res, here::here("va_learning.RDS"))
 ```
 
 ## Plotting
@@ -129,7 +129,7 @@ saveRDS(res, here::here("paper/va_learning.RDS"))
 ``` r
 require(tidyverse)
 n <- rep(seq(500, 6000, by = 500), 10)
-res <- readRDS(here::here("paper/va_learning.RDS"))
+res <- readRDS(here::here("va_learning.RDS"))
 acc <- purrr::map_dbl(res, ~.$overall['Accuracy'])
 
 ## Downright stole from Van Atteveldt.
