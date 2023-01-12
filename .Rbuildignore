@@ -1,4 +1,4 @@
-^README\.Rmd$
+^README\.*
 ^LICENSE\.md$
 ^rawdata/
 ^data/smallunciviltweets\.rda$

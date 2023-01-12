@@ -89,6 +89,7 @@ detect_cuda <- function() {
 #' \dontrun{
 #' setup_grafzahl(cuda = TRUE)
 #' }
+#' @return TRUE (invisibly) if installation is successful.
 #' @export
 setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     envname <- .gen_envname(cuda = cuda)
@@ -124,4 +125,5 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     if (isTRUE(cuda)) {
         .install_gpu_pytorch(cuda_version = cuda_version)
     }
+    return(invisible())
 }

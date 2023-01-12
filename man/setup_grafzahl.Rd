@@ -13,6 +13,9 @@ setup_grafzahl(cuda = FALSE, force = FALSE, cuda_version = "11.3")
 
 \item{cuda_version}{character, indicate CUDA version, ignore if \code{cuda} is \code{FALSE}}
 }
+\value{
+TRUE (invisibly) if installation is successful.
+}
 \description{
 Install a self-contained miniconda environment with all Python components (PyTorch, Transformers, Simpletransformers, etc) which grafzahl required. The default location is "~/.local/share/r-miniconda/envs/grafzahl_condaenv" (suffix "_cuda" is added if \code{cuda} is \code{TRUE}).
 On Linux or Mac and if miniconda is not found, this function will also install miniconda. The path can be changed by the environment variable \code{GRAFZAHL_MINICONDA_PATH}

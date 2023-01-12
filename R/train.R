@@ -107,7 +107,15 @@
 #' @param manual_seed numeric, random seed
 #' @param verbose logical, if `TRUE`, debug messages will be displayed
 #' @param ... paramters pass to [grafzahl()]
-#' @return a `grafzahl` S3 object
+#' @return a `grafzahl` S3 object with the following items
+#' \item{call}{original function call} 
+#' \item{input_data}{input_data for the underlying python function}
+#' \item{output_dir}{location of the output model}
+#' \item{model_type}{model type}
+#' \item{model_name}{model name}
+#' \item{regression}{whether or not it is a regression model}
+#' \item{levels}{factor levels of y}
+#' \item{manual_seed}{random seed}
 #' @examples
 #' \dontrun{
 #' library(quanteda)
@@ -118,6 +126,26 @@
 #'                  train_size = 1, num_train_epochs = 2)
 #' preds <- predict(model)
 #' table(preds, docvars(data_corpus_moviereviews, "sentiment"))
+#'
+#' ## Using the default cross validation method
+#' model2 <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+#' predict(model)
+#'
+#' ## Using LIME
+#' input <- corpus(ecosent, text_field = "headline")
+#' training_corpus <- corpus_subset(input, !gold)
+#' model3 <- grafzahl(x = training_corpus,
+#'                  y = "value",
+#'                  model_name = "GroNLP/bert-base-dutch-cased")
+#' test_corpus <- corpus_subset(input, gold)
+#' predicted_sentiment <- predict(model3, test_corpus)
+#' require(lime)
+#' sentences <- c("Dijsselbloem pessimistisch over snelle stappen Grieken",
+#'                "Aandelenbeurzen zetten koersopmars voort")
+#' explainer <- lime(training_corpus, model3)
+#' explanations <- explain(sentences, explainer, n_labels = 1,
+#'                         n_features = 3)
+#' plot_text_explanations(explanations)
 #' }
 #' @seealso [predict.grafzahl()]
 #' @export
