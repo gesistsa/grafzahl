@@ -3,3 +3,4 @@
 ^rawdata/
 ^data/smallunciviltweets\.rda$
 ^paper/
+^cran-comments\.md$
