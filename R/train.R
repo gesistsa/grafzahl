@@ -117,34 +117,27 @@
 #' \item{levels}{factor levels of y}
 #' \item{manual_seed}{random seed}
 #' @examples
-#' \dontrun{
+#' if (detect_conda() && interactive()) {
 #' library(quanteda)
-#' library(quanteda.textmodels) ## for the data only
 #' set.seed(20190721)
-#' model <- grafzahl(x = data_corpus_moviereviews, y = "sentiment",
-#'                  model_name = "bert-base-uncased",
-#'                  train_size = 1, num_train_epochs = 2)
-#' preds <- predict(model)
-#' table(preds, docvars(data_corpus_moviereviews, "sentiment"))
-#'
 #' ## Using the default cross validation method
-#' model2 <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
-#' predict(model)
+#' model1 <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+#' predict(model1)
 #'
 #' ## Using LIME
 #' input <- corpus(ecosent, text_field = "headline")
 #' training_corpus <- corpus_subset(input, !gold)
-#' model3 <- grafzahl(x = training_corpus,
+#' model2 <- grafzahl(x = training_corpus,
 #'                  y = "value",
 #'                  model_name = "GroNLP/bert-base-dutch-cased")
 #' test_corpus <- corpus_subset(input, gold)
-#' predicted_sentiment <- predict(model3, test_corpus)
+#' predicted_sentiment <- predict(model2, test_corpus)
 #' require(lime)
 #' sentences <- c("Dijsselbloem pessimistisch over snelle stappen Grieken",
 #'                "Aandelenbeurzen zetten koersopmars voort")
-#' explainer <- lime(training_corpus, model3)
+#' explainer <- lime(training_corpus, model2)
 #' explanations <- explain(sentences, explainer, n_labels = 1,
-#'                         n_features = 3)
+#'                         n_features = 2)
 #' plot_text_explanations(explanations)
 #' }
 #' @seealso [predict.grafzahl()]

@@ -22,7 +22,7 @@ On Linux or Mac and if miniconda is not found, this function will also install m
 }
 \examples{
 # setup an environment with cuda enabled.
-\dontrun{
-setup_grafzahl(cuda = TRUE)
+if (detect_conda() && interactive()) {
+    setup_grafzahl(cuda = TRUE)
 }
 }

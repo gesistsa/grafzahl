@@ -23,6 +23,16 @@
     file.exists(.gen_conda_path(bin = TRUE))
 }
 
+#' @rdname detect_cuda
+#' @export
+detect_conda <- function() {
+    if(!.have_conda()) {
+        return(FALSE)
+    }
+    envnames <- grep("^grafzahl_condaenv", .list_condaenvs(), value = TRUE)
+    length(envnames) != 0
+}
+
 .gen_envname <- function(cuda = TRUE) {
     envname <- "grafzahl_condaenv"
     if (cuda) {
@@ -45,10 +55,14 @@
     return(invisible(NULL))
 }
 
-#' Detect cuda
+#' Detecting Miniconda And Cuda
 #'
-#' This function detects whether cuda is available. If `setup_grafzahl` was executed with `cuda` being `FALSE`, this function will return `FALSE`. Even if `setup_grafzahl` was executed with `cuda` being `TRUE` but with any factor that can't enable cuda (e.g. no Nvidia GPU, the environment was incorrectly created), this function will also return `FALSE`.
-#' @return boolean, whether cuda is available.
+#' These functions detects miniconda and cuda.
+#'
+#' `detect_conda` conducts a test to check whether 1) a miniconda installation and 2) the grafzahl miniconda environment exist.
+#' 
+#' `detect_cuda` checks whether cuda is available. If `setup_grafzahl` was executed with `cuda` being `FALSE`, this function will return `FALSE`. Even if `setup_grafzahl` was executed with `cuda` being `TRUE` but with any factor that can't enable cuda (e.g. no Nvidia GPU, the environment was incorrectly created), this function will also return `FALSE`.
+#' @return boolean, whether the system is available.
 #' @export
 detect_cuda <- function() {
     options('python_init' = NULL)
@@ -86,8 +100,8 @@ detect_cuda <- function() {
 #' @param cuda_version character, indicate CUDA version, ignore if `cuda` is `FALSE`
 #' @examples
 #' # setup an environment with cuda enabled.
-#' \dontrun{
-#' setup_grafzahl(cuda = TRUE)
+#' if (detect_conda() && interactive()) {
+#'     setup_grafzahl(cuda = TRUE)
 #' }
 #' @return TRUE (invisibly) if installation is successful.
 #' @export
