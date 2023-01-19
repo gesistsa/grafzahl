@@ -291,7 +291,7 @@ print.grafzahl <- function(x, ...) {
 #' Create a grafzahl S3 object from the output_dir
 #'
 #' Create a grafzahl S3 object from the output_dir
-#' @inheritParams grafzahl
+#' @inherit grafzahl return params
 #' @export
 hydrate <- function(output_dir, model_type = NULL, regression = FALSE) {
     if (missing(output_dir)) {

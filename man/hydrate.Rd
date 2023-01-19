@@ -13,6 +13,17 @@ hydrate(output_dir, model_type = NULL, regression = FALSE)
 
 \item{regression}{logical, if \code{TRUE}, the task is regression, classification otherwise.}
 }
+\value{
+a \code{grafzahl} S3 object with the following items
+\item{call}{original function call}
+\item{input_data}{input_data for the underlying python function}
+\item{output_dir}{location of the output model}
+\item{model_type}{model type}
+\item{model_name}{model name}
+\item{regression}{whether or not it is a regression model}
+\item{levels}{factor levels of y}
+\item{manual_seed}{random seed}
+}
 \description{
 Create a grafzahl S3 object from the output_dir
 }
