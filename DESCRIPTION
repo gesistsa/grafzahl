@@ -4,7 +4,7 @@ Version: 0.0.5
 Authors@R: 
     person("Chung-hong", "Chan", , "chainsawtiney@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6232-7530"))
-Description: Duct tape the 'quanteda' ecosystem (Benoit et al., 2018) <doi:10.21105/joss.00774> to modern Transformer-based text classification models (Wolf et al., 2020) <doi:10.18653/v1/2020.emnlp-demos.6>, in order to faciliate supervised machine learning for textual data. This package mimics the behaviors of 'quanteda.textmodels' and provides a function to setup the 'Python' environment to use the pretrained models from 'Hugging Face' <https://huggingface.co/>.
+Description: Duct tape the 'quanteda' ecosystem (Benoit et al., 2018) <doi:10.21105/joss.00774> to modern Transformer-based text classification models (Wolf et al., 2020) <doi:10.18653/v1/2020.emnlp-demos.6>, in order to facilitate supervised machine learning for textual data. This package mimics the behaviors of 'quanteda.textmodels' and provides a function to setup the 'Python' environment to use the pretrained models from 'Hugging Face' <https://huggingface.co/>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
