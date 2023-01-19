@@ -118,7 +118,7 @@
 #' @param train_size numeric, proportion of data in `x` and `y` to be used actually for training. The rest will be used for cross validation.
 #' @param args list, additionally parameters to be used in the underlying simple transformers
 #' @param cleanup logical, if `TRUE`, the `runs` directory generated will be removed when the training is done
-#' @param model_type a string indicating model_type of the input model. If `NULL`, it will be infered from `model_name`. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".
+#' @param model_type a string indicating model_type of the input model. If `NULL`, it will be inferred from `model_name`. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".
 #' @param manual_seed numeric, random seed
 #' @param verbose logical, if `TRUE`, debug messages will be displayed
 #' @param ... paramters pass to [grafzahl()]

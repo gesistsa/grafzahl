@@ -95,7 +95,7 @@ textmodel_transformer(...)
 
 \item{cleanup}{logical, if \code{TRUE}, the \code{runs} directory generated will be removed when the training is done}
 
-\item{model_type}{a string indicating model_type of the input model. If \code{NULL}, it will be infered from \code{model_name}. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".}
+\item{model_type}{a string indicating model_type of the input model. If \code{NULL}, it will be inferred from \code{model_name}. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".}
 
 \item{manual_seed}{numeric, random seed}
 

@@ -7,7 +7,7 @@
 get_amharic_data()
 }
 \value{
-A named list of two copora: training and test
+A named list of two corpora: training and test
 }
 \description{
 This function downloads the training and test sets of the Amharic News Text Classification Dataset from Hugging Face.

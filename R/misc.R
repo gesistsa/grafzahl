@@ -24,7 +24,7 @@ NULL
 #'
 #' This function downloads the training and test sets of the Amharic News Text Classification Dataset from Hugging Face.
 #'
-#' @return A named list of two copora: training and test
+#' @return A named list of two corpora: training and test
 #' @references Azime, Israel Abebe, and Nebil Mohammed (2021). "An Amharic News Text classification Dataset." arXiv preprint arXiv:2103.05639
 #' @export
 get_amharic_data <- function() {
