@@ -4,3 +4,4 @@
 ^data/smallunciviltweets\.rda$
 ^paper/
 ^cran-comments\.md$
+^CRAN-SUBMISSION$

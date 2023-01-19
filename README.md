@@ -24,7 +24,8 @@ package. See the examples below.
 Please cite this software as:
 
 Chan, C., (2023). [grafzahl: fine-tuning Transformers for text data from
-within R](paper/grafzahl_sp.pdf). (under review)
+within R](paper/grafzahl_sp.pdf). *Computational Communication Research*
+(Accepted)
 
 ## Installation
 

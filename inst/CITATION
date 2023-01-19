@@ -3,7 +3,7 @@ citHeader("To cite grafzahl in publications use:")
 
 bibentry(bibtype = "article",
          title = "grafzahl: fine-tuning Transformers for text data from within R.",
-         journal = "Computational Communication Science",
+         journal = "Computational Communication Research",
          author = c(person("Chung-hong", "Chan")),
          url = "https://github.com/chainsawriot/grafzahl",
          year = 2023
