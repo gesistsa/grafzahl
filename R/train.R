@@ -1,3 +1,10 @@
+.say <- function(verbose, ...) {
+    if (isTRUE(verbose)) {
+        cat(...)
+    }
+    invisible()
+}
+
 .download_from_huggingface <- function(model_name, json_file = tempfile()) {
     json_url <- paste0("https://huggingface.co/", model_name, "/raw/main/config.json")
     tryCatch({
@@ -74,6 +81,14 @@
          "created" = Sys.Date())
 }
 
+.generate_random_dir <- function(lowest = 1, highest = 1000) {
+    random_dir <- file.path(tempdir(), sample(seq(from = lowest, to = highest), 1))
+    if (!dir.exists(random_dir)) {
+        dir.create(random_dir)
+    }
+    return(normalizePath(random_dir))
+}
+
 .create_object <- function(call = NA, input_data = NULL, output_dir, model_type, model_name = NA, regression, levels = NULL, manual_seed = NULL) {
     result <- list(
         call = call,
@@ -97,7 +112,7 @@
 #' @param y training labels. It can either be a single string indicating which [docvars] of the [corpus] is the training labels; a vector of training labels in either character or factor; or `NULL` if the [corpus] contains exactly one column in [docvars] and that column is the training labels. If `x` is a character vector, `y` must be a vector of the same length.
 #' @param model_name string indicates either 1) the model name on Hugging Face website; 2) the local path of the model
 #' @param regression logical, if `TRUE`, the task is regression, classification otherwise.
-#' @param output_dir string, location of the output model. Important: Please note that if this directory exists, it will be overwritten.
+#' @param output_dir string, location of the output model. If missing, the model will be stored in a temporary directory. Important: Please note that if this directory exists, it will be overwritten.
 #' @param cuda logical, whether to use CUDA, default to [detect_cuda()].
 #' @param num_train_epochs numeric, if `train_size` is not exactly 1.0, the maximum number of epochs to try in the "early stop" regime will be this number times 5 (i.e. 4 * 5 = 20 by default). If `train_size` is exactly 1.0, the number of epochs is exactly that.
 #' @param train_size numeric, proportion of data in `x` and `y` to be used actually for training. The rest will be used for cross validation.
@@ -144,7 +159,7 @@
 #' @seealso [predict.grafzahl()]
 #' @export
 grafzahl <- function(x, y = NULL, model_name = "xlm-roberta-base",
-                     regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                     regression = FALSE, output_dir, cuda = detect_cuda(), num_train_epochs = 4,
                      train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                      manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     UseMethod("grafzahl")
@@ -153,7 +168,7 @@ grafzahl <- function(x, y = NULL, model_name = "xlm-roberta-base",
 #' @rdname grafzahl
 #' @export
 grafzahl.default <- function(x, y = NULL, model_name = "xlm-roberta-base",
-                             regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                             regression = FALSE, output_dir, cuda = detect_cuda(), num_train_epochs = 4,
                              train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                              manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     return(invisible(NULL))
@@ -162,7 +177,7 @@ grafzahl.default <- function(x, y = NULL, model_name = "xlm-roberta-base",
 #' @rdname grafzahl
 #' @export
 grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
-                            regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                            regression = FALSE, output_dir, cuda = detect_cuda(), num_train_epochs = 4,
                             train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     if (quanteda::ndoc(x) <= 1) {
@@ -185,12 +200,20 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
     if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
-    if (!dir.exists(output_dir)) {
-        dir.create(output_dir)
+    if (missing(output_dir)) {
+        output_dir <- .generate_random_dir()
+        .say(verbose, "No `output_dir` provided. The output model will be written to:", output_dir, "\n")      
+    } else {
+        if (dir.exists(output_dir)) {
+            .say(verbose, output_dir, "exists. Will be overwritten.\n")
+        } else {
+            dir.create(output_dir)
+            .say(verbose, output_dir, "created.\n")
+        }
+        output_dir <- normalizePath(output_dir)
     }
-    output_dir <- normalizePath(output_dir)
     best_model_dir <- file.path(output_dir, "best_model")
-    cache_dir <- normalizePath(tempdir())
+    cache_dir <- .generate_random_dir(9999, 300000)
     .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = verbose)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
@@ -217,7 +240,7 @@ textmodel_transformer <- function(...) {
 #' @rdname grafzahl
 #' @export
 grafzahl.character <- function(x, y = NULL, model_name = "xlmroberta",
-                            regression = FALSE, output_dir = "./output", cuda = detect_cuda(), num_train_epochs = 4,
+                            regression = FALSE, output_dir, cuda = detect_cuda(), num_train_epochs = 4,
                             train_size = 0.8, args = NULL, cleanup = TRUE, model_type = NULL,
                             manual_seed = floor(runif(1, min = 1, max = 721831)), verbose = TRUE) {
     if (is.null(y)) {
@@ -231,10 +254,6 @@ grafzahl.character <- function(x, y = NULL, model_name = "xlmroberta",
              args = args, cleanup = cleanup, manual_seed = manual_seed, verbose = verbose)
 }
 
-## #' @export
-## suggest_model <- function(x) {
-##     return(NA)
-## }
 
 #' Prediction from a fine-tuned grafzahl object
 #'

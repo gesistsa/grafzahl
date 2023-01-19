@@ -13,7 +13,7 @@ grafzahl(
   y = NULL,
   model_name = "xlm-roberta-base",
   regression = FALSE,
-  output_dir = "./output",
+  output_dir,
   cuda = detect_cuda(),
   num_train_epochs = 4,
   train_size = 0.8,
@@ -29,7 +29,7 @@ grafzahl(
   y = NULL,
   model_name = "xlm-roberta-base",
   regression = FALSE,
-  output_dir = "./output",
+  output_dir,
   cuda = detect_cuda(),
   num_train_epochs = 4,
   train_size = 0.8,
@@ -45,7 +45,7 @@ grafzahl(
   y = NULL,
   model_name = "xlm-roberta-base",
   regression = FALSE,
-  output_dir = "./output",
+  output_dir,
   cuda = detect_cuda(),
   num_train_epochs = 4,
   train_size = 0.8,
@@ -63,7 +63,7 @@ textmodel_transformer(...)
   y = NULL,
   model_name = "xlmroberta",
   regression = FALSE,
-  output_dir = "./output",
+  output_dir,
   cuda = detect_cuda(),
   num_train_epochs = 4,
   train_size = 0.8,
@@ -83,7 +83,7 @@ textmodel_transformer(...)
 
 \item{regression}{logical, if \code{TRUE}, the task is regression, classification otherwise.}
 
-\item{output_dir}{string, location of the output model. Important: Please note that if this directory exists, it will be overwritten.}
+\item{output_dir}{string, location of the output model. If missing, the model will be stored in a temporary directory. Important: Please note that if this directory exists, it will be overwritten.}
 
 \item{cuda}{logical, whether to use CUDA, default to \code{\link[=detect_cuda]{detect_cuda()}}.}
 
