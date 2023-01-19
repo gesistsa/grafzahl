@@ -23,6 +23,7 @@ a \code{grafzahl} S3 object with the following items
 \item{regression}{whether or not it is a regression model}
 \item{levels}{factor levels of y}
 \item{manual_seed}{random seed}
+\item{meta}{metadata about the current session}
 }
 \description{
 Create a grafzahl S3 object from the output_dir

@@ -113,6 +113,7 @@ a \code{grafzahl} S3 object with the following items
 \item{regression}{whether or not it is a regression model}
 \item{levels}{factor levels of y}
 \item{manual_seed}{random seed}
+\item{meta}{metadata about the current session}
 }
 \description{
 Fine tune (or train) a pretrained Transformer model for your given training labelled data \code{x} and \code{y}. The prediction task can be classification (if \code{regression} is \code{FALSE}, default) or regression (if \code{regression} is \code{TRUE}).

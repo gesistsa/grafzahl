@@ -116,6 +116,7 @@
 #' \item{regression}{whether or not it is a regression model}
 #' \item{levels}{factor levels of y}
 #' \item{manual_seed}{random seed}
+#' \item{meta}{metadata about the current session}
 #' @examples
 #' if (detect_conda() && interactive()) {
 #' library(quanteda)
