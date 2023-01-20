@@ -123,7 +123,7 @@ model <- grafzahl(x = training_corpus,
                   model_name = "GroNLP/bert-base-dutch-cased")
 ```
 
-In general, it is better to specify `output_dir` (where to put the saved model object). By default, it will be `output` in the current working directory. The R function `set.seed()` can also be used to preserve the random seed for reproducibility.
+In general, it is better to specify `output_dir` (where to put the saved model object). By default, it will be `output` a random temporary directory. The R function `set.seed()` can also be used to preserve the random seed for reproducibility.
 
 On a regular off-the-shelf gaming laptop with a GeForce RTX 3050 Ti GPU and 4G of GPU ram, the process took around 20 minutes.
 

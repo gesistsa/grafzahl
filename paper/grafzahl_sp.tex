@@ -4,7 +4,7 @@
 %
 \documentclass[
   english,
-  man,floatsintext]{apa7}
+  man,floatsintext]{apa6}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
@@ -303,7 +303,7 @@ With the corpus and model name, the \texttt{grafzahl} function is used to fine-t
 \end{Highlighting}
 \end{Shaded}
 
-In general, it is better to specify \texttt{output\_dir} (where to put the saved model object). By default, it will be \texttt{output} in the current working directory. The R function \texttt{set.seed()} can also be used to preserve the random seed for reproducibility.
+In general, it is better to specify \texttt{output\_dir} (where to put the saved model object). By default, it will be \texttt{output} a random temporary directory. The R function \texttt{set.seed()} can also be used to preserve the random seed for reproducibility.
 
 On a regular off-the-shelf gaming laptop with a GeForce RTX 3050 Ti GPU and 4G of GPU ram, the process took around 20 minutes.
 
@@ -346,7 +346,7 @@ Figure \ref{fig:fig2} show the fine-tuned Transformer model's learning curve alo
 
 \begin{figure}
 \centering
-\includegraphics{fig2-1.pdf}
+\includegraphics{grafzahl_sp_files/figure-latex/fig2-1.pdf}
 \caption{\label{fig:fig2}Learning curve of machine learning algorithms}
 \end{figure}
 
@@ -372,9 +372,7 @@ With the trained model, we can explain the predictions made for the following tw
 \end{Shaded}
 
 \begin{figure}
-\includegraphics[width=1\linewidth]{fig1}
-\caption{Generating Local Interpretable Model-agnostic Explanations (LIME) of two predictions from the trained Dutch sentiment model}
-\label{fig:fig1}
+\includegraphics[width=1\linewidth]{fig1} \caption{Generating Local Interpretable Model-agnostic Explanations (LIME) of two predictions from the trained Dutch sentiment model}\label{fig:fig1}
 \end{figure}
 
 Figure \ref{fig:fig1} shows that for the sentence \emph{``Dijsselbloem pessimistisch over snelle stappen Grieken''} (classified as negative), the tokens \emph{pessimistisch} and \emph{stappen} are making the prediction towards the classified position (negative). But the token \emph{Dijsselbloem} is making it away.
