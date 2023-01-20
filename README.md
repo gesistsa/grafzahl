@@ -5,13 +5,14 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/grafzahl)](https://CRAN.R-project.org/package=grafzahl)
 <!-- badges: end -->
 
-WIP: The goal of grafzahl (**G**racious **R** **A**nalytical
-**F**ramework for **Z**appy **A**nalysis of **H**uman **L**anguages
-\[1\]) is to duct tape the
-[quanteda](https://github.com/quanteda/quanteda) ecosystem to modern
-[Transformer-based text classification
+The goal of grafzahl (**G**racious **R** **A**nalytical **F**ramework
+for **Z**appy **A**nalysis of **H**uman **L**anguages \[1\]) is to duct
+tape the [quanteda](https://github.com/quanteda/quanteda) ecosystem to
+modern [Transformer-based text classification
 models](https://simpletransformers.ai/), e.g. BERT, RoBERTa, etc. The
 model object looks and feels like the textmodel S3 object from the
 package
@@ -33,6 +34,12 @@ You can install the development version of grafzahl like so:
 
 ``` r
 remotes::install_github("chainsawriot/grafzahl")
+```
+
+Or, you can install the CRAN version
+
+``` r
+install.packages("grafzahl")
 ```
 
 After that, you need to setup your conda environment
