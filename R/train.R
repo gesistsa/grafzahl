@@ -278,7 +278,7 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
     }
     .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = FALSE)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
-    res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw)
+    res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw, use_cuda = cuda)
     if (return_raw || is.null(object$levels)) {
         return(res)
     }

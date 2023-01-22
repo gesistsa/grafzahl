@@ -54,10 +54,10 @@ def py_train(data, num_labels, output_dir, best_model_dir, cache_dir, model_type
         model = ClassificationModel(model_type = model_type, model_name = model_name, num_labels = num_labels, use_cuda = py_detect_cuda(), args = mod_args)
         model.train_model(data, verbose = verbose, show_running_loss = verbose)
 
-def py_predict(to_predict, model_type, output_dir, return_raw = False):
+def py_predict(to_predict, model_type, output_dir, return_raw, use_cuda):
     if len(to_predict) == 1:
         to_predict = [to_predict]
-    model = ClassificationModel(model_type, output_dir, args = {
+    model = ClassificationModel(model_type, output_dir, use_cuda = use_cuda, args = {
         'reprocess_input_data': True,
         "use_multiprocessing": False,
         "fp16": True,
