@@ -86,9 +86,15 @@ detect_cuda <- function() {
 .install_gpu_pytorch <- function(cuda_version) {
     .initialize_conda(.gen_envname(cuda = TRUE))
     conda_executable <- .gen_conda_path(bin = TRUE)
-    system2(conda_executable, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", "pytorch-cuda", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-c", "nvidia", "-y"))
+    status <- system2(conda_executable, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", "pytorch-cuda", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-c", "nvidia", "-y"))
+    if (status != 0) {
+        stop("Cannot set up `pytorch`.")
+    }    
     python_executable <- reticulate::py_config()$python
-    system2(python_executable, args = c("-m", "pip", "install", "simpletransformers"))
+    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers"))
+    if (status != 0) {
+        stop("Cannot set up `simpletransformers`.")
+    }    
 }
 
 #' Setup grafzahl
@@ -134,10 +140,17 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     }
     status <- system2(.gen_conda_path(bin = TRUE), args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname, "python=3.10"))
     if (status != 0) {
-        stop("Cannot setup.")
+        stop("Cannot set up the basic conda environment.")
     }
     if (isTRUE(cuda)) {
         .install_gpu_pytorch(cuda_version = cuda_version)
+    }
+    ## Post-setup checks
+    if (!detect_conda()) {
+        stop("Conda can't be detected.")
+    }
+    if (detect_cuda() != cuda) {
+        stop("Cuda wasn't configurated correctly.")
     }
     return(invisible())
 }
