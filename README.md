@@ -7,6 +7,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/grafzahl)](https://CRAN.R-project.org/package=grafzahl)
+[![R-CMD-check](https://github.com/chainsawriot/grafzahl/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/chainsawriot/grafzahl/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of grafzahl (**G**racious **R** **A**nalytical **F**ramework
