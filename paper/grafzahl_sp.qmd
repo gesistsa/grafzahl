@@ -21,7 +21,7 @@ volume: 1
 pubnumber: 1
 pubyear: 2023
 firstpage: 1
-doi: 10.5117/CCR2019.1.001.VANA
+doi: ""
 bibliography      : "grafzahl_sp.bib"
 shortauthors: "Chan"
 format:
