@@ -218,19 +218,18 @@ content analysis},
 \begin{document}
 \abstract{This paper introduces \texttt{grafzahl}, an R package for
 fine-tuning Transformers for text data from within R. The package is
-used in this paper to reproduce the analyses in communication papers or,
-of non-Germanic benchmark datasets. Very significant improvement in
-model accuacy over traditional machine learning approach such as
-Convoluted Neural Network is observed.}
+used in this paper to reproduce the analyses in other papers. Very
+significant improvement in model accuracy over traditional machine
+learning approaches such as convolutional Neural Network is observed.}
 \keywords{machine learning, transformers, R, python, automated content
 analysis}
 \maketitle
-\volume{1}
+\volume{5}
 \pubnumber{1}
 \pubyear{2023}
-\firstpage{1}
-
-\shortauthors{Chan}\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden, frame hidden, enhanced, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
+\firstpage{76}
+\doi{10.5117/CCR2023.1.003.CHAN}
+\shortauthors{Chan}\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, boxrule=0pt, interior hidden, enhanced, frame hidden]}{\end{tcolorbox}}\fi
 
 \hypertarget{put-the-r-back-in-transformers}{%
 \subsection{Put the R back in
@@ -273,13 +272,14 @@ coded into three categories: negative (-1), neutral (0), and positive
 
 In the original paper, Van Atteveldt, Van der Velden, and Boukes (2021)
 show that the best method for predicting expert coding, other than
-coding by student helpers, is convoluted neural network (CNN) with Dutch
-word embeddings trained on Dutch news. The out-of-sample F1 of .63, .66,
-and .56 were reported for the three categories. As the data (including
-the training-and-test split) are publicly available \footnote{\url{https://github.com/vanatteveldt/ecosent/}}
-and included in this package (as \texttt{ecosent}), I can provide a
-head-to-head comparison between the reported CNN and the
-Transformer-based model trained with \texttt{grafzahl}.
+coding by student helpers, is convolutional neural network (CNN) with
+Dutch word embeddings trained on Dutch news. The out-of-sample F1 of
+.63, .66, and .56 were reported for the three categories. As the data
+(including the training-and-test split) are publicly available
+\footnote{\url{https://github.com/vanatteveldt/ecosent/}} and included
+in this package (as \texttt{ecosent}), I can provide a head-to-head
+comparison between the reported CNN and the Transformer-based model
+trained with \texttt{grafzahl}.
 
 There are three important columns in the \texttt{ecosent} data frame:
 
@@ -414,7 +414,7 @@ sentiment of the headlines in the test set.
 
 \hypertarget{step-5-evaluate-performance}{%
 \subsubsection{Step 5: Evaluate
-performance}\label{step-5-evaluate-performance}}
+Performance}\label{step-5-evaluate-performance}}
 
 With the predicted sentiment and the ground truth, there are many ways
 to evaluate the performance of the fine-tuned model. The simplest way is
