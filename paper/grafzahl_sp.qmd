@@ -24,11 +24,13 @@ firstpage: 76
 doi: "10.5117/CCR2023.1.003.CHAN"
 bibliography      : "grafzahl_sp.bib"
 shortauthors: "Chan"
+knitr:
+  opts_chunk:
+    fig.path: img/
 format:
   ccr-pdf:
     keep-tex: true
 ---
-
 
 ## Put the R back in Transformers
 
