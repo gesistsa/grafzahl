@@ -152,7 +152,7 @@ The out-of-sample F1 measures of the fine-tuned model are .76, .67, and .72 (vs 
 #| echo: false
 #| fig.cap: Learning curve of machine learning algorithms
 #| label: fig-fig1
-readRDS(here::here("learning.RDS"))
+readRDS(here::here("paper/learning.RDS"))
 ```
 
 [^caret]: The function `confusionMatrix()` can accept the predicted values and ground truth directly, without using `table()` first. But the predicted values and ground truth must be `factor`: `confusionMatrix(as.factor(predicted_sentiment), as.factor(docvars(test_corpus, "value")), mode = "prec_recall")`. 

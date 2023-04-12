@@ -5,6 +5,9 @@ bibentry(bibtype = "article",
          title = "grafzahl: fine-tuning Transformers for text data from within R.",
          journal = "Computational Communication Research",
          author = c(person("Chung-hong", "Chan")),
-         url = "https://github.com/chainsawriot/grafzahl",
+         doi = "10.5117/CCR2023.1.003.CHAN",
+         volume = 5,
+         number = 1,
+         pages = "76-84",
          year = 2023
          )

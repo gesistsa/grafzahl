@@ -25,7 +25,7 @@ If you don't know what I am talking about, don't worry, this package is gracious
 
 Please cite this software as:
 
-Chan, C., (2023). [grafzahl: fine-tuning Transformers for text data from within R](paper/grafzahl_sp.pdf). *Computational Communication Research* (Accepted)
+Chan, C., (2023). [grafzahl: fine-tuning Transformers for text data from within R](paper/grafzahl_sp.pdf). *Computational Communication Research* 5(1): 76-84. [https://doi.org/10.5117/CCR2023.1.003.CHAN](https://doi.org/10.5117/CCR2023.1.003.CHAN)
 
 ## Installation
 
