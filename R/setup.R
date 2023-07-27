@@ -1,3 +1,7 @@
+.is_windows <- function() {
+    Sys.info()[['sysname']] == "Windows"
+}
+
 .gen_conda_path <- function(envvar = "GRAFZAHL_MINICONDA_PATH", bin = FALSE) {
     if (Sys.getenv(envvar) == "") {
         main_path <- reticulate::miniconda_path()
@@ -7,6 +11,9 @@
     if (isFALSE(bin)) {
         return(main_path)
     }
+    if (.is_windows()) {
+        return(file.path(main_path, "Scripts", "conda.exe"))
+    }
     file.path(main_path, "bin", "conda")
 }
 
@@ -14,6 +21,9 @@
 ## Should err somehow
 .list_condaenvs <- function() {
     all_condaenvs <- reticulate::conda_list(conda = .gen_conda_path(bin = TRUE))
+    if (.is_windows()) {
+        return(all_condaenvs$name)
+    }
     all_condaenvs[grepl(.gen_conda_path(), all_condaenvs$python),]$name
 }
 
@@ -43,7 +53,11 @@ detect_conda <- function() {
 
 .initialize_conda <- function(envname, verbose = FALSE) {
     if (is.null(getOption('python_init'))) {
-        python_executable <- file.path(.gen_conda_path(), "envs", envname, "bin", "python")
+        if (.is_windows()) {
+            python_executable <- file.path(.gen_conda_path(), "envs", envname, "python.exe")
+        } else {
+            python_executable <- file.path(.gen_conda_path(), "envs", envname, "bin", "python")
+        }
         ## Until rstydio/reticulate#1308 is fixed; mask it for now
         Sys.setenv(RETICULATE_MINICONDA_PATH = .gen_conda_path())
         reticulate::use_miniconda(python_executable, required = TRUE)
@@ -138,7 +152,7 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     } else {
         yml_file <- "grafzahl.yml"
     }
-    status <- system2(.gen_conda_path(bin = TRUE), args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname, "python=3.10"))
+    status <- system2(.gen_conda_path(bin = TRUE), args = c("env", "create",  paste0("-f=", system.file(yml_file, package = 'grafzahl')), "-n", envname))
     if (status != 0) {
         stop("Cannot set up the basic conda environment.")
     }
