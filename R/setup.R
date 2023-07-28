@@ -21,10 +21,10 @@
 ## Should err somehow
 .list_condaenvs <- function() {
     all_condaenvs <- reticulate::conda_list(conda = .gen_conda_path(bin = TRUE))
-    if (.is_windows()) {
-        return(all_condaenvs$name)
-    }
-    all_condaenvs[grepl(.gen_conda_path(), all_condaenvs$python),]$name
+    ##if (.is_windows()) {
+    return(all_condaenvs$name)
+    ##}
+    ##all_condaenvs[grepl(.gen_conda_path(), all_condaenvs$python),]$name
 }
 
 .have_conda <- function() {
@@ -105,7 +105,7 @@ detect_cuda <- function() {
         stop("Cannot set up `pytorch`.")
     }    
     python_executable <- reticulate::py_config()$python
-    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers"))
+    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers", "\"transformers==4.30.2\"", "\"scipy==1.10.1\""))
     if (status != 0) {
         stop("Cannot set up `simpletransformers`.")
     }    
