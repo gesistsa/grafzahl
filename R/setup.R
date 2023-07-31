@@ -105,7 +105,7 @@ detect_cuda <- function() {
         stop("Cannot set up `pytorch`.")
     }    
     python_executable <- reticulate::py_config()$python
-    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers", "\"transformers==4.30.2\"", "\"scipy==1.10.1\""))
+    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers==0.63.11", "\"transformers==4.30.2\"", "\"scipy==1.10.1\""))
     if (status != 0) {
         stop("Cannot set up `simpletransformers`.")
     }    
