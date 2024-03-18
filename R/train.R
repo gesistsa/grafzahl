@@ -34,7 +34,7 @@
     model_type <- gsub("-", "", tolower(model_type))
     if (!model_type %in% c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
                            "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
-                           "squeezebert", "xlm", "xlmroberta", "xlnet")) {
+                           "squeezebert", "xlm", "xlmroberta", "xlnet", "debertav2")) {
         stop("Invalid `model_type`.", call. = FALSE)
     }
     return(model_type)    
