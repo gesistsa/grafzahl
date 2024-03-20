@@ -20,6 +20,12 @@ NULL
 #' Van Atteveldt, W., Van der Velden, M. A., & Boukes, M. (2021). The validity of sentiment analysis: Comparing manual annotation, crowd-coding, dictionary approaches, and machine learning algorithms. Communication Methods and Measures, 15(2), 121-140.
 "ecosent"
 
+#' Supported model types
+#'
+#' A vector of all supported model types.
+#' 
+"supported_model_types"
+
 #' Download The Amharic News Text Classification Dataset
 #'
 #' This function downloads the training and test sets of the Amharic News Text Classification Dataset from Hugging Face.

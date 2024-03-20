@@ -32,9 +32,7 @@
         model_type <- .infer_model_type(model_name)
     }
     model_type <- gsub("-", "", tolower(model_type))
-    if (!model_type %in% c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
-                           "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
-                           "squeezebert", "xlm", "xlmroberta", "xlnet", "debertav2")) {
+    if (!model_type %in% grafzahl::supported_model_types) {
         stop("Invalid `model_type`.", call. = FALSE)
     }
     return(model_type)    
@@ -118,7 +116,7 @@
 #' @param train_size numeric, proportion of data in `x` and `y` to be used actually for training. The rest will be used for cross validation.
 #' @param args list, additionally parameters to be used in the underlying simple transformers
 #' @param cleanup logical, if `TRUE`, the `runs` directory generated will be removed when the training is done
-#' @param model_type a string indicating model_type of the input model. If `NULL`, it will be inferred from `model_name`. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "debertav2", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".
+#' @param model_type a string indicating model_type of the input model. If `NULL`, it will be inferred from `model_name`. Supported model types are available in [supported_model_types].
 #' @param manual_seed numeric, random seed
 #' @param verbose logical, if `TRUE`, debug messages will be displayed
 #' @param ... paramters pass to [grafzahl()]
