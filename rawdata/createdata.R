@@ -22,3 +22,8 @@ download.file(url <- "https://raw.githubusercontent.com/vanatteveldt/ecosent/mas
 
 ecosent <- read.csv("rawdata/sentences_ml.csv", encoding = "UTF-8")[c("id", "headline", "value", "gold")]
 save(ecosent, file = "data/ecosent.rda", ascii = FALSE, compress = "xz")
+
+supported_model_types <- c("albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert",
+                           "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert",
+                           "squeezebert", "xlm", "xlmroberta", "xlnet", "debertav2")
+usethis::use_data(supported_model_types)

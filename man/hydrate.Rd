@@ -9,7 +9,7 @@ hydrate(output_dir, model_type = NULL, regression = FALSE)
 \arguments{
 \item{output_dir}{string, location of the output model. If missing, the model will be stored in a temporary directory. Important: Please note that if this directory exists, it will be overwritten.}
 
-\item{model_type}{a string indicating model_type of the input model. If \code{NULL}, it will be inferred from \code{model_name}. It can only be one of the following: "albert", "bert", "bertweet", "bigbird", "camembert", "deberta", "distilbert", "electra", "flaubert", "herbert", "layoutlm", "layoutlmv2", "longformer", "mpnet", "mobilebert", "rembert", "roberta", "squeezebert", "squeezebert", "xlm", "xlmroberta", "xlnet". This will be lowercased and hyphens will be removed, e.g. "XLM-RoBERTa" will be normalized to "xlmroberta".}
+\item{model_type}{a string indicating model_type of the input model. If \code{NULL}, it will be inferred from \code{model_name}. Supported model types are available in \link{supported_model_types}.}
 
 \item{regression}{logical, if \code{TRUE}, the task is regression, classification otherwise.}
 }
