@@ -82,18 +82,22 @@ detect_conda <- function() {
 #' @return boolean, whether the system is available.
 #' @export
 detect_cuda <- function() {
-    options('python_init' = NULL)
+    options("python_init" = NULL)
     if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
-    envnames <- grep("^grafzahl_condaenv", .list_condaenvs(), value = TRUE)
-    if (length(envnames) == 0) {
-        stop("No conda environment found. Run `setup_grafzahl` to bootstrap one.")
-    }
-    if ("grafzahl_condaenv_cuda" %in% envnames) {
-        envname <- "grafzahl_condaenv_cuda"
+    if (is.null(getOption("nonconda"))) {
+        envnames <- grep("^grafzahl_condaenv", .list_condaenvs(), value = TRUE)
+        if (length(envnames) == 0) {
+            stop("No conda environment found. Run `setup_grafzahl` to bootstrap one.")
+        }
+        if ("grafzahl_condaenv_cuda" %in% envnames) {
+            envname <- "grafzahl_condaenv_cuda"
+        } else {
+            envname <- "grafzahl_condaenv"
+        }
     } else {
-        envname <- "grafzahl_condaenv"
+        envname <- NA
     }
     .initialize_python(envname = envname, verbose = FALSE)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
