@@ -1,6 +1,6 @@
 .say <- function(verbose, ...) {
     if (isTRUE(verbose)) {
-        cat(...)
+        message(...)
     }
     invisible()
 }
@@ -212,7 +212,7 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
     }
     best_model_dir <- file.path(output_dir, "best_model")
     cache_dir <- .generate_random_dir(9999, 300000)
-    .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = verbose)
+    .initialize_python(envname = .gen_envname(cuda = cuda), verbose = verbose)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
     if (cleanup && dir.exists(file.path("./", "runs"))) {
@@ -274,7 +274,7 @@ predict.grafzahl <- function(object, newdata, cuda = detect_cuda(), return_raw =
     if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
-    .initialize_conda(envname = .gen_envname(cuda = cuda), verbose = FALSE)
+    .initialize_python(envname = .gen_envname(cuda = cuda), verbose = FALSE)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     res <- py_predict(to_predict = newdata, model_type = object$model_type, output_dir = object$output_dir, return_raw = return_raw, use_cuda = cuda)
     if (return_raw || is.null(object$levels)) {

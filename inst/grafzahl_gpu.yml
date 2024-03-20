@@ -4,7 +4,7 @@ channels:
   - anaconda
   - defaults
 dependencies:
-  - python=3.10
+  - python
   - pip
   - pip:
     - pandas

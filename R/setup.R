@@ -51,8 +51,13 @@ detect_conda <- function() {
     return(envname)
 }
 
-.initialize_conda <- function(envname, verbose = FALSE) {
-    if (is.null(getOption('python_init'))) {
+.initialize_python <- function(envname, verbose = FALSE) {
+    if (is.null(getOption("python_init")) && isTRUE(getOption("nonconda"))) {
+        options("python_init" = TRUE)
+        .say(verbose = verbose, "[ADVANCED MODE] Use a non-conda Python environment. The environment is not checked.")
+        return(invisible(NULL))
+    }
+    if (is.null(getOption("python_init"))) {
         if (.is_windows()) {
             python_executable <- file.path(.gen_conda_path(), "envs", envname, "python.exe")
         } else {
@@ -61,10 +66,8 @@ detect_conda <- function() {
         ## Until rstydio/reticulate#1308 is fixed; mask it for now
         Sys.setenv(RETICULATE_MINICONDA_PATH = .gen_conda_path())
         reticulate::use_miniconda(python_executable, required = TRUE)
-        options('python_init' = TRUE)
-        if (verbose) {
-            message("Conda environment ", envname, " is initialized.")
-        }
+        options("python_init" = TRUE)
+        .say(verbose = verbose, "Conda environment ", envname, " is initialized.")
     }
     return(invisible(NULL))
 }
@@ -92,20 +95,20 @@ detect_cuda <- function() {
     } else {
         envname <- "grafzahl_condaenv"
     }
-    .initialize_conda(envname = envname, verbose = FALSE)
+    .initialize_python(envname = envname, verbose = FALSE)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
     return(py_detect_cuda())
 }
 
 .install_gpu_pytorch <- function(cuda_version) {
-    .initialize_conda(.gen_envname(cuda = TRUE))
+    .initialize_python(.gen_envname(cuda = TRUE))
     conda_executable <- .gen_conda_path(bin = TRUE)
     status <- system2(conda_executable, args = c("install", "-n", .gen_envname(cuda = TRUE), "pytorch", "pytorch-cuda", paste0("cudatoolkit=", cuda_version), "-c", "pytorch", "-c", "nvidia", "-y"))
     if (status != 0) {
         stop("Cannot set up `pytorch`.")
     }    
     python_executable <- reticulate::py_config()$python
-    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers==0.63.11", "\"transformers==4.30.2\"", "\"scipy==1.10.1\""))
+    status <- system2(python_executable, args = c("-m", "pip", "install", "simpletransformers", "\"transformers\"", "\"scipy\""))
     if (status != 0) {
         stop("Cannot set up `simpletransformers`.")
     }    
