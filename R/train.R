@@ -1,6 +1,6 @@
 .say <- function(verbose, ...) {
     if (isTRUE(verbose)) {
-        message(...)
+        message(paste(..., sep = " "))
     }
     invisible()
 }
@@ -214,6 +214,9 @@ grafzahl.corpus <- function(x, y = NULL, model_name = "xlm-roberta-base",
     cache_dir <- .generate_random_dir(9999, 300000)
     .initialize_python(envname = .gen_envname(cuda = cuda), verbose = verbose)
     reticulate::source_python(system.file("python", "st.py", package = "grafzahl"))
+    if (isTRUE(getOption("nonconda"))) {
+        .say(verbose, "[ADVANCED MODE] If you are running this on Google Colab, you will not see the training progress.")
+    }
     py_train(data = input_data, num_labels = num_labels, output_dir = output_dir, best_model_dir = best_model_dir, cache_dir = cache_dir, model_type = model_type, model_name = model_name, num_train_epochs = num_train_epochs, train_size = train_size, manual_seed = manual_seed, regression = regression, verbose = verbose)
     if (cleanup && dir.exists(file.path("./", "runs"))) {
         unlink(file.path("./", "runs"), recursive = TRUE, force = TRUE)
