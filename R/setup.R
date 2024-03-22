@@ -52,9 +52,9 @@ detect_conda <- function() {
 }
 
 .initialize_python <- function(envname, verbose = FALSE) {
-    if (is.null(getOption("python_init")) && isTRUE(getOption("nonconda"))) {
+    if (is.null(getOption("python_init")) && isTRUE(getOption("grafzahl.nonconda"))) {
         options("python_init" = TRUE)
-        .say(verbose = verbose, "[ADVANCED MODE] Use a non-conda Python environment. The environment is not checked.")
+        .say(verbose = verbose, "[Non-conda MODE] Use a non-conda Python environment. The environment is not checked.")
         return(invisible(NULL))
     }
     if (is.null(getOption("python_init"))) {
@@ -86,7 +86,7 @@ detect_cuda <- function() {
     if (Sys.getenv("KILL_SWITCH") == "KILL") {
         return(NA)
     }
-    if (is.null(getOption("nonconda"))) {
+    if (is.null(getOption("grafzahl.nonconda"))) {
         envnames <- grep("^grafzahl_condaenv", .list_condaenvs(), value = TRUE)
         if (length(envnames) == 0) {
             stop("No conda environment found. Run `setup_grafzahl` to bootstrap one.")
@@ -173,5 +173,34 @@ setup_grafzahl <- function(cuda = FALSE, force = FALSE, cuda_version = "11.3") {
     if (detect_cuda() != cuda) {
         stop("Cuda wasn't configurated correctly.")
     }
-    return(invisible())
+    return(invisible(TRUE))
+}
+
+#' Set up grafzahl to be used on Google Colab or similar environments
+#'
+#' Set up grafzahl to be used on Google Colab or similar environments. This function is also useful if you do not
+#' want to use conda on a local machine, e.g. you have configurateed the required Python package.
+#'
+#' @param install logical, whether to install the required Python packages
+#' @param check logical, whether to perform a check after the setup. The check displays 1) whether CUDA can be detected, 2) whether
+#' the non-conda mode has been activated, i.e. whether the option 'grafzahl.nonconda' is `TRUE`.
+#' @param verbose, logical, whether to display messages
+#' @examples
+#' # A typical use case for Google Colab
+#' if (interactive()) {
+#'     use_nonconda()
+#' }
+#' @return TRUE (invisibly) if installation is successful.
+#' @export
+use_nonconda <- function(install = TRUE, check = TRUE, verbose = TRUE) {
+    if (install) {
+        system("python3 -m pip install simpletransformers emoji", intern = TRUE, ignore.stdout = !verbose)
+    }
+    options("grafzahl.nonconda" = TRUE)
+    if (check) {
+        .say(verbose, "Post-setup Check:")
+        .say(verbose, "CUDA detected: ", detect_cuda())
+        .say(verbose, "Non-conda mode activated: ", isTRUE(getOption("grafzahl.nonconda")))
+    }
+    return(invisible(TRUE))
 }
