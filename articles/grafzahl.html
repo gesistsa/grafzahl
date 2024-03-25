@@ -82,7 +82,7 @@
 Python environment. It can be installed by using the provided
 <code><a href="../reference/setup_grafzahl.html">setup_grafzahl()</a></code> function.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzah" class="external-link">grafzahl</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzahl">grafzahl</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/setup_grafzahl.html">setup_grafzahl</a></span><span class="op">(</span>cuda <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># FALSE if you don't have CUDA compatible GPUs</span></span>
 <span></span>
 <span><span class="co">## Use grafzahl right away, an example</span></span>
@@ -114,7 +114,7 @@ machine, you can just install the Python packages
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> pip install simpletransformers emoji</span></code></pre></div>
 <p>And then</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzah" class="external-link">grafzahl</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzahl">grafzahl</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/use_nonconda.html">use_nonconda</a></span><span class="op">(</span>install <span class="op">=</span> <span class="cn">FALSE</span>, check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co">## what it does is just: options("grafzahl.nonconda" = TRUE)</span></span>
 <span></span>
 <span><span class="co">## Use grafzahl right away, an example</span></span>
@@ -152,7 +152,7 @@ name</p>
 <p>In R, you have to change to default conda path</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## suppose /home/yourname/miniconda is the base path of your conda installation</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzah" class="external-link">grafzahl</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://gesistsa.github.io/grafzahl">grafzahl</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>GRAFZAHL_MINICONDA_PATH <span class="op">=</span> <span class="st">"/home/yourname/miniconda"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Use grafzahl right away, an example</span></span>
