@@ -28,15 +28,9 @@ Chan, C., (2023). [grafzahl: fine-tuning Transformers for text data from
 within R](paper/grafzahl_sp.pdf). *Computational Communication Research*
 5(1): 76-84. <https://doi.org/10.5117/CCR2023.1.003.CHAN>
 
-## Installation
+## Installation: Local environment
 
-You can install the development version of grafzahl like so:
-
-``` r
-remotes::install_github("chainsawriot/grafzahl")
-```
-
-Or, you can install the CRAN version
+Install the CRAN version
 
 ``` r
 install.packages("grafzahl")
@@ -49,10 +43,22 @@ require(grafzahl)
 setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
 ```
 
+## On remote environments, e.g. Google Colab
+
+On Google Colab, you need to enable non-Conda mode
+
+``` r
+install.packages("grafzahl")
+require(grafzahl)
+use_nonconda()
+```
+
+Please refer the vignette.
+
 ## Usage
 
-Suppose you have a bunch of tweets in quanteda corpus format. And the
-corpus has exactly one docvar that denotes the labels you want to
+Suppose you have a bunch of tweets in the quanteda corpus format. And
+the corpus has exactly one docvar that denotes the labels you want to
 predict. The data is from [this
 repository](https://github.com/pablobarbera/incivility-sage-open)
 (Theocharis et al., 2020).
