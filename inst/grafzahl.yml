@@ -5,13 +5,13 @@ channels:
   - anaconda
   - defaults
 dependencies:
-  - python=3.10
+  - python
   - pip
   - pytorch>=1.6+cpuonly
   - pip:
     - pandas
     - tqdm  
-    - simpletransformers==0.63.11
-    - emoji==0.6.0
-    - transformers==4.30.2
-    - scipy==1.10.1
+    - simpletransformers
+    - emoji
+    - transformers
+    - scipy

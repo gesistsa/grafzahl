@@ -1,0 +1,111 @@
+---
+title: "Setup Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Setup Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This is a quick setup guide for different situations.
+
+`grafzahl` requires a Python environment. By default, `grafzahl` assumes you would like to use a miniconda-based Python environment. It can be installed by using the provided `setup_grafzahl()` function.
+
+```r
+require(grafzahl)
+setup_grafzahl(cuda = TRUE) # FALSE if you don't have CUDA compatible GPUs
+
+## Use grafzahl right away, an example
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+
+```
+
+There are other setup options.
+
+# Google Colab and similar services
+
+In order to use `grafzahl` on Google Colab, please choose the R-based Runtime (Runtime > Change Runtime Type > Runtime Type: R). You might also want to choose a hardware accelerator, e.g. T4 GPU.
+
+In this case, you need to enable the non-Conda mode, i.e. `use_nonconda()`. By default, it will also install the required Python packages.
+
+```r
+install.packages("grafzahl")
+use_nonconda(install = TRUE, check = TRUE) # default
+
+## Use grafzahl right away, an example
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+```
+
+# Default Python
+
+If you don't want to use any conda configuration on your local machine, you can just install the Python packages `simpletransformers` and `emoji`.
+
+```bash
+python3 -m pip install simpletransformers emoji
+```
+
+And then
+
+```r
+require(grafzahl)
+use_nonconda(install = FALSE, check = TRUE) ## what it does is just: options("grafzahl.nonconda" = TRUE)
+
+## Use grafzahl right away, an example
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+```
+
+# Use conda, but not the grafzahl's default
+
+Suppose you have installed a conda installation elsewhere. Please note the `base` path of your conda installation.
+
+```bash
+conda env list
+```
+
+Create a new conda environment with the default grafzahl environment name
+
+## With Cuda
+
+```bash
+conda env create -n grafzahl_condaenv_cuda
+conda activate grafzahl_condaenv_cuda
+conda install -n grafzahl_condaenv_cuda python pip pytorch pytorch-cuda cudatoolkit -c pytorch -c nvidia
+python -m pip install simpletransformers emoji
+conda deactivate
+
+## Test the CUDA installation with
+
+Rscript -e "grafzahl::detect_cuda()"
+```
+
+## Without Cuda
+
+```bash
+conda env create -n grafzahl_condaenv
+conda activate grafzahl_condaenv
+conda install -n grafzahl_condaenv python pip pytorch -c pytorch
+python -m pip install simpletransformers emoji
+conda deactivate
+```
+
+In R, you have to change to default conda path
+
+```r
+## suppose /home/yourname/miniconda is the base path of your conda installation
+require(grafzahl)
+Sys.setenv(GRAFZAHL_MINICONDA_PATH = "/home/yourname/miniconda")
+
+## Use grafzahl right away, an example
+model <- grafzahl(unciviltweets, model_type = "bertweet", model_name = "vinai/bertweet-base")
+```
+
+# Explanation: Important options and envvars
+
+There are two important options and envvars. `options("grafzahl.nonconda")` controls whether to use the non-conda mode. Envvar `GRAFZAHL_MINICONDA_PATH` controls the base path of the conda installation. If it is `""` (the default), `reticulate::miniconda_path()` is used as the base path.
