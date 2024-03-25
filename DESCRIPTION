@@ -12,7 +12,9 @@ RoxygenNote: 7.3.1
 URL: https://github.com/gesistsa/grafzahl
 BugReports: https://github.com/gesistsa/grafzahl/issues
 Suggests: 
+    knitr,
     quanteda.textmodels,
+    rmarkdown,
     testthat (>= 3.0.0),
     withr
 Config/testthat/edition: 3
@@ -26,3 +28,4 @@ Imports:
 LazyData: true
 Depends: 
     R (>= 3.5)
+VignetteBuilder: knitr
