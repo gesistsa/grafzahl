@@ -1,0 +1,270 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "grafzahl" in publications use:'
+type: software
+license: GPL-3.0-or-later
+title: 'grafzahl: Supervised Machine Learning for Textual Data Using Transformers
+  and ''Quanteda'''
+version: 0.0.11
+doi: 10.5117/CCR2023.1.003.CHAN
+identifiers:
+- type: doi
+  value: 10.32614/CRAN.package.grafzahl
+abstract: 'Duct tape the ''quanteda'' ecosystem (Benoit et al., 2018) <https://doi.org/10.21105/joss.00774>
+  to modern Transformer-based text classification models (Wolf et al., 2020) <https://doi.org/10.18653/v1/2020.emnlp-demos.6>,
+  in order to facilitate supervised machine learning for textual data. This package
+  mimics the behaviors of ''quanteda.textmodels'' and provides a function to setup
+  the ''Python'' environment to use the pretrained models from ''Hugging Face'' <https://huggingface.co/>.
+  More information: <https://doi.org/10.5117/CCR2023.1.003.CHAN>.'
+authors:
+- family-names: Chan
+  given-names: Chung-hong
+  email: chainsawtiney@gmail.com
+  orcid: https://orcid.org/0000-0002-6232-7530
+preferred-citation:
+  type: article
+  title: 'grafzahl: fine-tuning Transformers for text data from within R.'
+  authors:
+  - family-names: Chan
+    given-names: Chung-hong
+    email: chainsawtiney@gmail.com
+    orcid: https://orcid.org/0000-0002-6232-7530
+  journal: Computational Communication Research
+  doi: 10.5117/CCR2023.1.003.CHAN
+  volume: '5'
+  issue: '1'
+  year: '2023'
+  start: 76-84
+repository: https://CRAN.R-project.org/package=grafzahl
+repository-code: https://github.com/gesistsa/grafzahl
+url: https://gesistsa.github.io/grafzahl/
+contact:
+- family-names: Chan
+  given-names: Chung-hong
+  email: chainsawtiney@gmail.com
+  orcid: https://orcid.org/0000-0002-6232-7530
+references:
+- type: software
+  title: knitr
+  abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
+  notes: Suggests
+  url: https://yihui.org/knitr/
+  repository: https://CRAN.R-project.org/package=knitr
+  authors:
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  year: '2024'
+  doi: 10.32614/CRAN.package.knitr
+- type: software
+  title: rmarkdown
+  abstract: 'rmarkdown: Dynamic Documents for R'
+  notes: Suggests
+  url: https://pkgs.rstudio.com/rmarkdown/
+  repository: https://CRAN.R-project.org/package=rmarkdown
+  authors:
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@posit.co
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  - family-names: Dervieux
+    given-names: Christophe
+    email: cderv@posit.co
+    orcid: https://orcid.org/0000-0003-4474-2498
+  - family-names: McPherson
+    given-names: Jonathan
+    email: jonathan@posit.co
+  - family-names: Luraschi
+    given-names: Javier
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevin@posit.co
+  - family-names: Atkins
+    given-names: Aron
+    email: aron@posit.co
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Cheng
+    given-names: Joe
+    email: joe@posit.co
+  - family-names: Chang
+    given-names: Winston
+    email: winston@posit.co
+  - family-names: Iannone
+    given-names: Richard
+    email: rich@posit.co
+    orcid: https://orcid.org/0000-0003-3925-190X
+  year: '2024'
+  doi: 10.32614/CRAN.package.rmarkdown
+- type: software
+  title: testthat
+  abstract: 'testthat: Unit Testing for R'
+  notes: Suggests
+  url: https://testthat.r-lib.org
+  repository: https://CRAN.R-project.org/package=testthat
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  year: '2024'
+  doi: 10.32614/CRAN.package.testthat
+  version: '>= 3.0.0'
+- type: software
+  title: withr
+  abstract: 'withr: Run Code ''With'' Temporarily Modified Global State'
+  notes: Suggests
+  url: https://withr.r-lib.org
+  repository: https://CRAN.R-project.org/package=withr
+  authors:
+  - family-names: Hester
+    given-names: Jim
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@posit.co
+  - family-names: Müller
+    given-names: Kirill
+    email: krlmlr+r@mailbox.org
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevinushey@gmail.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  - family-names: Chang
+    given-names: Winston
+  year: '2024'
+  doi: 10.32614/CRAN.package.withr
+- type: software
+  title: jsonlite
+  abstract: 'jsonlite: A Simple and Robust JSON Parser and Generator for R'
+  notes: Imports
+  url: https://jeroen.r-universe.dev/jsonlite
+  repository: https://CRAN.R-project.org/package=jsonlite
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2024'
+  doi: 10.32614/CRAN.package.jsonlite
+- type: software
+  title: lime
+  abstract: 'lime: Local Interpretable Model-Agnostic Explanations'
+  notes: Imports
+  url: https://lime.data-imaginist.com
+  repository: https://CRAN.R-project.org/package=lime
+  authors:
+  - family-names: Hvitfeldt
+    given-names: Emil
+    email: emilhhvitfeldt@gmail.com
+    orcid: https://orcid.org/0000-0002-0679-1945
+  - family-names: Pedersen
+    given-names: Thomas Lin
+    email: thomasp85@gmail.com
+    orcid: https://orcid.org/0000-0002-5147-4711
+  - family-names: Benesty
+    given-names: Michaël
+    email: michael@benesty.fr
+  year: '2024'
+  doi: 10.32614/CRAN.package.lime
+- type: software
+  title: quanteda
+  abstract: 'quanteda: Quantitative Analysis of Textual Data'
+  notes: Imports
+  url: https://quanteda.io
+  repository: https://CRAN.R-project.org/package=quanteda
+  authors:
+  - family-names: Benoit
+    given-names: Kenneth
+    email: kbenoit@lse.ac.uk
+    orcid: https://orcid.org/0000-0002-0797-564X
+  - family-names: Watanabe
+    given-names: Kohei
+    email: watanabe.kohei@gmail.com
+    orcid: https://orcid.org/0000-0001-6519-5265
+  - family-names: Wang
+    given-names: Haiyan
+    email: whyinsa@yahoo.com
+    orcid: https://orcid.org/0000-0003-4992-4311
+  - family-names: Nulty
+    given-names: Paul
+    email: paul.nulty@gmail.com
+    orcid: https://orcid.org/0000-0002-7214-4666
+  - family-names: Obeng
+    given-names: Adam
+    email: quanteda@binaryeagle.com
+    orcid: https://orcid.org/0000-0002-2906-4775
+  - family-names: Müller
+    given-names: Stefan
+    email: stefan.mueller@ucd.ie
+    orcid: https://orcid.org/0000-0002-6315-4125
+  - family-names: Matsuo
+    given-names: Akitaka
+    email: a.matsuo@essex.ac.uk
+    orcid: https://orcid.org/0000-0002-3323-6330
+  - family-names: Lowe
+    given-names: William
+    email: lowe@hertie-school.org
+    orcid: https://orcid.org/0000-0002-1549-6163
+  year: '2024'
+  doi: 10.32614/CRAN.package.quanteda
+- type: software
+  title: reticulate
+  abstract: 'reticulate: Interface to ''Python'''
+  notes: Imports
+  url: https://rstudio.github.io/reticulate/
+  repository: https://CRAN.R-project.org/package=reticulate
+  authors:
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevin@posit.co
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@posit.co
+  - family-names: Tang
+    given-names: Yuan
+    email: terrytangyuan@gmail.com
+    orcid: https://orcid.org/0000-0001-5243-233X
+  year: '2024'
+  doi: 10.32614/CRAN.package.reticulate
+- type: software
+  title: utils
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  institution:
+    name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2024'
+- type: software
+  title: stats
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  institution:
+    name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2024'
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  notes: Depends
+  url: https://www.R-project.org/
+  authors:
+  - name: R Core Team
+  institution:
+    name: R Foundation for Statistical Computing
+    address: Vienna, Austria
+  year: '2024'
+  version: '>= 3.5'
+

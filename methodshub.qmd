@@ -1,0 +1,112 @@
+---
+title: grafzahl - Supervised Machine Learning for Textual Data Using Transformers and 'Quanteda'
+format:
+  html:
+    embed-resources: true
+  gfm: default
+---
+
+## Description
+
+<!-- - Provide a brief and clear description of the method, its purpose, and what it aims to achieve. Add a link to a related paper from social science domain and show how your method can be applied to solve that research question.   -->
+
+Duct tape the 'quanteda' ecosystem (Benoit et al., 2018) [doi:10.21105/joss.00774](https://doi.org/10.21105/joss.00774) to modern Transformer-based text classification models (Wolf et al., 2020) [doi:10.18653/v1/2020.emnlp-demos.6](https://doi.org/10.18653/v1/2020.emnlp-demos.6), in order to facilitate supervised machine learning for textual data. This package mimics the behaviors of 'quanteda.textmodels' and provides a function to setup the 'Python' environment to use the pretrained models from 'Hugging Face' <https://huggingface.co/>. More information: [doi:10.5117/CCR2023.1.003.CHAN](https://doi.org/10.5117/CCR2023.1.003.CHAN).
+
+## Keywords
+
+<!-- EDITME -->
+
+* Deep Learning
+* Supervised machine learning
+* Text analysis
+
+## Science Usecase(s)
+
+<!-- - Include usecases from social sciences that would make this method applicable in a certain scenario.  -->
+<!-- The use cases or research questions mentioned should arise from the latest social science literature cited in the description. -->
+
+<!-- This is an example -->
+
+This package can be used in any typical supervised machine learning usecase involving text data. In the software paper ([Chan et al.](https://doi.org/10.5117/CCR2023.1.003.CHAN)), several cases were presented, e.g. Prediction of incivility based on tweets ([Theocharis et al., 2020](https://doi.org/10.1177/2158244020919447)).
+
+## Repository structure
+
+This repository follows [the standard structure of an R package](https://cran.r-project.org/doc/FAQ/R-exts.html#Package-structure).
+
+## Environment Setup
+
+With R installed:
+
+```r
+install.packages("grafzahl")
+```
+
+## Hardware Requirements (Optional)
+
+A GPU that supports CUDA is optional.
+
+## Input Data 
+
+<!-- - The input data has to be a Digital Behavioral Data (DBD) Dataset -->
+<!-- - You can provide link to a public DBD dataset. GESIS DBD datasets (https://www.gesis.org/en/institute/digital-behavioral-data) -->
+
+<!-- This is an example -->
+
+`grafzahl` accepts text data as either character vector or the `corpus` data structure of `quanteda`.
+
+## Sample Input and Output Data
+
+<!-- - Show how the input data looks like through few sample instances -->
+<!-- - Providing a sample output on the sample input to help cross check  -->
+
+A sample input is a `corpus`. This is an example dataset:
+
+```{r}
+#| message: false
+library(grafzahl)
+library(quanteda)
+unciviltweets
+```
+
+The output is an S3 object.
+
+## How to Use
+
+Before training, please setup the conda environment.
+
+```r
+setup_grafzahl(cuda = TRUE) ## if you have GPU(s)
+```
+
+A typical way to train and make predictions.
+
+```r
+input <- corpus(ecosent, text_field = "headline")
+training_corpus <- corpus_subset(input, !gold)
+```
+
+Use the `x` (text data), `y` (label, in this case a [`docvar`](https://quanteda.io/reference/docvars.html)), and `model_name` (Model name, from Hugging Face) parameters to control how the supervised machine learning model is trained.
+
+```r
+model2 <- grafzahl(x = training_corpus,
+                  y = "value",
+                  model_name = "GroNLP/bert-base-dutch-cased")
+test_corpus <- corpus_subset(input, gold)
+predict(model2, test_corpus)
+```
+
+## Contact Details
+
+Maintainer: Chung-hong Chan <chainsawtiney@gmail.com>
+
+Issue Tracker: [https://github.com/gesistsa/grafzahl/issues](https://github.com/gesistsa/grafzahl/issues)
+
+## Publication
+
+1. Chan, C. H. (2023). grafzahl: fine-tuning Transformers for text data from within R. Computational Communication Research, 5(1), 76. <https://doi.org/10.5117/CCR2023.1.003.CHAN>
+
+<!-- ## Acknowledgements -->
+<!-- - Acknowledgements if any -->
+
+<!-- ## Disclaimer -->
+<!-- - Add any disclaimers, legal notices, or usage restrictions for the method, if necessary. -->
