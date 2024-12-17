@@ -1,54 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/404.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/articles/grafzahl.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/index.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/detect_cuda.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/ecosent.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/get_amharic_data.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/grafzahl.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/hydrate.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/predict.grafzahl.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/setup_grafzahl.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/supported_model_types.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/unciviltweets.html</loc>
-  </url>
-  <url>
-    <loc>https://gesistsa.github.io/grafzahl/reference/use_nonconda.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://gesistsa.github.io/grafzahl/404.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/LICENSE.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/articles/grafzahl.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/articles/index.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/authors.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/index.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/detect_cuda.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/ecosent.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/get_amharic_data.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/grafzahl.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/hydrate.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/index.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/predict.grafzahl.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/setup_grafzahl.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/supported_model_types.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/unciviltweets.html</loc></url>
+<url><loc>https://gesistsa.github.io/grafzahl/reference/use_nonconda.html</loc></url>
 </urlset>
+
