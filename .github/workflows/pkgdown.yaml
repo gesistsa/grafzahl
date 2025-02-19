@@ -1,8 +1,6 @@
 on:
   push:
     branches: v*
-  pull_request:
-    branches: v*
   release:
     types: published
   workflow_dispatch: ~
