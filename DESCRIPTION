@@ -1,6 +1,6 @@
 Package: grafzahl
 Title: Supervised Machine Learning for Textual Data Using Transformers and 'Quanteda'
-Version: 0.0.11
+Version: 0.0.12
 Authors@R: 
     person("Chung-hong", "Chan", , "chainsawtiney@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6232-7530"))
@@ -8,7 +8,7 @@ Description: Duct tape the 'quanteda' ecosystem (Benoit et al., 2018) <doi:10.21
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 URL: https://gesistsa.github.io/grafzahl/, https://github.com/gesistsa/grafzahl
 BugReports: https://github.com/gesistsa/grafzahl/issues
 Suggests: 

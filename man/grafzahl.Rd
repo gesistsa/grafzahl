@@ -75,9 +75,9 @@ textmodel_transformer(...)
 )
 }
 \arguments{
-\item{x}{the \link{corpus} or character vector of texts on which the model will be trained. Depending on \code{train_size}, some texts will be used for cross-validation.}
+\item{x}{the \link[quanteda:corpus]{quanteda::corpus} or character vector of texts on which the model will be trained. Depending on \code{train_size}, some texts will be used for cross-validation.}
 
-\item{y}{training labels. It can either be a single string indicating which \link{docvars} of the \link{corpus} is the training labels; a vector of training labels in either character or factor; or \code{NULL} if the \link{corpus} contains exactly one column in \link{docvars} and that column is the training labels. If \code{x} is a character vector, \code{y} must be a vector of the same length.}
+\item{y}{training labels. It can either be a single string indicating which \link[quanteda:docvars]{quanteda::docvars} of the \link[quanteda:corpus]{quanteda::corpus} is the training labels; a vector of training labels in either character or factor; or \code{NULL} if the \link[quanteda:corpus]{quanteda::corpus} contains exactly one column in \link[quanteda:docvars]{quanteda::docvars} and that column is the training labels. If \code{x} is a character vector, \code{y} must be a vector of the same length.}
 
 \item{model_name}{string indicates either 1) the model name on Hugging Face website; 2) the local path of the model}
 
