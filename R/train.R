@@ -106,8 +106,8 @@
 #' Fine tune a pretrained Transformer model for texts
 #'
 #' Fine tune (or train) a pretrained Transformer model for your given training labelled data `x` and `y`. The prediction task can be classification (if `regression` is `FALSE`, default) or regression (if `regression` is `TRUE`).
-#' @param x the [corpus] or character vector of texts on which the model will be trained. Depending on `train_size`, some texts will be used for cross-validation.
-#' @param y training labels. It can either be a single string indicating which [docvars] of the [corpus] is the training labels; a vector of training labels in either character or factor; or `NULL` if the [corpus] contains exactly one column in [docvars] and that column is the training labels. If `x` is a character vector, `y` must be a vector of the same length.
+#' @param x the [quanteda::corpus] or character vector of texts on which the model will be trained. Depending on `train_size`, some texts will be used for cross-validation.
+#' @param y training labels. It can either be a single string indicating which [quanteda::docvars] of the [quanteda::corpus] is the training labels; a vector of training labels in either character or factor; or `NULL` if the [quanteda::corpus] contains exactly one column in [quanteda::docvars] and that column is the training labels. If `x` is a character vector, `y` must be a vector of the same length.
 #' @param model_name string indicates either 1) the model name on Hugging Face website; 2) the local path of the model
 #' @param regression logical, if `TRUE`, the task is regression, classification otherwise.
 #' @param output_dir string, location of the output model. If missing, the model will be stored in a temporary directory. Important: Please note that if this directory exists, it will be overwritten.
@@ -260,7 +260,7 @@ grafzahl.character <- function(x, y = NULL, model_name = "xlmroberta",
 #'
 #' Make prediction from a fine-tuned grafzahl object.
 #' @param object an S3 object trained with [grafzahl()]
-#' @param newdata a [corpus] or a character vector of texts on which prediction should be made.
+#' @param newdata a [quanteda::corpus] or a character vector of texts on which prediction should be made.
 #' @inheritParams grafzahl
 #' @param return_raw logical, if `TRUE`, return a matrix of logits; a vector of class prediction otherwise
 #' @param ... not used
