@@ -41,9 +41,9 @@ With R installed:
 install.packages("grafzahl")
 ```
 
-## Hardware Requirements (Optional)
+## Hardware Requirements
 
-A GPU that supports CUDA is optional.
+Grafzahl runs on any machine that can run R. A GPU that supports CUDA is optional.
 
 ## Input Data 
 
@@ -94,6 +94,10 @@ model2 <- grafzahl(x = training_corpus,
 test_corpus <- corpus_subset(input, gold)
 predict(model2, test_corpus)
 ```
+
+## Technical Details
+
+See the [publication](https://doi.org/10.5117/CCR2023.1.003.CHAN) for tested and selected models and parameters, the reasoning behind the model selection, and employed datasets for training.
 
 ## Contact Details
 
