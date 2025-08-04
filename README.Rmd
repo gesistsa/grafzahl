@@ -86,6 +86,10 @@ predict(model)
 
 That is it.
 
+## Hardware Requirements
+
+Grafzahl runs on any hardware that can run R.
+
 ## Extended examples
 
 Several extended examples are also available.
@@ -116,6 +120,10 @@ Several extended examples are also available.
 |                   | bert       | bert-base-multilingual-cased       |
 |                   | xlmroberta | xlm-roberta-base                   |
 |                   | xlmroberta | xlm-roberta-large                  |
+
+## Technical Details
+
+See the [publication](https://doi.org/10.5117/CCR2023.1.003.CHAN) for tested and selected models and parameters, the reasoning behind the model selection, and employed datasets for training.
 
 # References
 
