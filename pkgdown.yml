@@ -1,9 +1,9 @@
 pandoc: 3.1.11
-pkgdown: 2.1.1
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   grafzahl: grafzahl.html
-last_built: 2025-02-19T12:19Z
+last_built: 2025-08-05T07:39Z
 urls:
   reference: https://gesistsa.github.io/grafzahl/reference
   article: https://gesistsa.github.io/grafzahl/articles
